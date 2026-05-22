@@ -1,0 +1,26 @@
+name: Harness gate
+
+on:
+  pull_request:
+    branches: [main, preview]
+
+permissions:
+  contents: read
+
+jobs:
+  harness:
+    name: Validate .harness/ contracts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install jq
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq jq
+
+      - name: Run harness check
+        env:
+          HARNESS_BASE_REF: origin/${{ github.base_ref }}
+        run: bash scripts/check-harness.sh

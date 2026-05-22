@@ -1,0 +1,18 @@
+{
+  "project": "<substituir pelo nome do projeto>",
+  "features": [
+    {
+      "id": "F001",
+      "title": "Feature de exemplo — substitua esta entrada",
+      "criteria": [
+        "Cada critério é observável: uma pessoa ou script consegue rodar e decidir passa/falha sem julgamento",
+        "Evite critérios como 'o código está limpo' — não são verificáveis",
+        "Prefira 'POST /api/foo com body X retorna 200 e cria uma linha Foo' a 'endpoint foo funciona'"
+      ],
+      "linked_issues": [],
+      "implemented": false,
+      "verified": false,
+      "notes": ""
+    }
+  ]
+}
