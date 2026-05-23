@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Valida o ambiente local do harness-engineering.
+# Mostra comando de instalação para cada item faltante.
+set -u
+
+any_missing=0
+
+check_cmd() {
+    local name=$1
+    local cmd=$2
+    local install=${3:-}
+    if command -v "$cmd" >/dev/null 2>&1; then
+        printf "  [OK]    %s\n" "$name"
+    else
+        printf "  [FALTA] %s\n" "$name"
+        if [[ -n "$install" ]]; then
+            printf "          %s\n" "$install"
+        fi
+        any_missing=1
+    fi
+}
+
+echo "=== Harness Doctor ==="
+
+echo ""
+echo "Dependências base:"
+check_cmd "git"             "git"     "apt install git / brew install git"
+check_cmd "gh (GitHub CLI)" "gh"      "brew install gh"
+check_cmd "python 3.9+"     "python3" "brew install python@3.12"
+check_cmd "uv (Astral)"     "uv"      "curl -LsSf https://astral.sh/uv/install.sh | sh"
+check_cmd "node"            "node"    "brew install node"
+
+# RTK: checa via `rtk --version` para reportar versão instalada.
+if command -v rtk >/dev/null 2>&1; then
+    rtk_version=$(rtk --version 2>/dev/null || echo "versão desconhecida")
+    printf "  [OK]    rtk (%s)\n" "$rtk_version"
+else
+    printf "  [FALTA] rtk (Rust Token Killer)\n"
+    printf "          brew install rtk\n"
+    printf "          ou: curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh\n"
+    any_missing=1
+fi
+
+echo ""
+echo "MCP servers:"
+check_cmd "mempalace" "mempalace" "uv tool install mempalace"
+
+echo ""
+echo "Skills symlink:"
+if [[ -L "$HOME/.claude/skills/harness" || -d "$HOME/.claude/skills/harness" ]]; then
+    echo "  [OK]    ~/.claude/skills/harness"
+else
+    echo "  [FALTA] symlink ~/.claude/skills/harness"
+    echo "          Rode: ./scripts/setup.sh"
+    any_missing=1
+fi
+
+echo ""
+echo "Claude MCP config:"
+if [[ -f "$HOME/.claude/mcp.json" ]]; then
+    echo "  [OK]    ~/.claude/mcp.json"
+else
+    echo "  [FALTA] ~/.claude/mcp.json"
+    echo "          Rode: ./scripts/setup.sh"
+    any_missing=1
+fi
+
+echo ""
+if [[ "$any_missing" -eq 1 ]]; then
+    echo "Doctor: itens faltando. Rode ./scripts/setup.sh para corrigir."
+    exit 1
+else
+    echo "Doctor: tudo OK."
+fi
