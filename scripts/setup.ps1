@@ -5,11 +5,10 @@
 .DESCRIPTION
     Roda uma vez por maquina. Idempotente.
       1. Valida dependencias (git, gh, python, uv).
-      2. Cria junction de skills/ -> ~/.claude/skills/harness/.
+      2. Cria junction skills/ -> ~/.claude/skills/harness/ e dir ~/.claude/skills/captured/.
       3. Instala RTK (Rust Token Killer).
-      4. Instala MCP servers (mempalace; openspace na Fase 5).
-      5. Configura ~/.claude/mcp.json com mempalace.
-      6. Roda doctor.ps1 no fim.
+      4. Instala MCP servers (mempalace + openspace) e escreve ~/.claude/mcp.json.
+      5. Roda doctor.ps1 no fim.
 .PARAMETER SkipMcp
     Pula instalacao dos MCP servers. Util em CI ou ambientes restritos.
 .PARAMETER Force
@@ -27,7 +26,9 @@ $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $claudeDir = Join-Path $env:USERPROFILE '.claude'
 $claudeSkillsDir = Join-Path $claudeDir 'skills'
 $skillsTarget = Join-Path $claudeSkillsDir 'harness'
+$capturedTarget = Join-Path $claudeSkillsDir 'captured'
 $repoSkills = Join-Path $repoRoot 'skills'
+$openspaceWorkspace = Join-Path $env:USERPROFILE '.openspace-workspace'
 
 Write-Host '=== Harness Engineering Setup ===' -ForegroundColor Cyan
 Write-Host "Repo:   $repoRoot"
@@ -73,6 +74,12 @@ if (-not (Test-Path $skillsTarget)) {
 }
 Write-Host "  $skillsTarget -> $repoSkills" -ForegroundColor Green
 
+# Diretorio para skills CAPTURED pelo OpenSpace (untracked, local da maquina).
+if (-not (Test-Path $capturedTarget)) {
+    New-Item -ItemType Directory -Path $capturedTarget | Out-Null
+}
+Write-Host "  $capturedTarget (captured skills do OpenSpace)" -ForegroundColor Green
+
 # --- 3. RTK (Rust Token Killer) --------------------------------------------
 Write-Host ''
 Write-Host '[3/5] Instalando RTK...' -ForegroundColor Yellow
@@ -112,23 +119,50 @@ if (-not $SkipMcp) {
         Write-Host '     instalado.' -ForegroundColor Green
     }
 
-    Write-Host '  -> openspace (Fase 5 - placeholder)' -ForegroundColor Gray
+    Write-Host '  -> openspace' -ForegroundColor Cyan
+    if (Get-Command openspace-mcp -ErrorAction SilentlyContinue) {
+        Write-Host '     openspace-mcp ja instalado.' -ForegroundColor Green
+    } else {
+        & uv tool install 'git+https://github.com/HKUDS/OpenSpace.git'
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host '     Falha ao instalar openspace via uv. Manual:' -ForegroundColor Yellow
+            Write-Host '       git clone https://github.com/HKUDS/OpenSpace.git ~/.openspace' -ForegroundColor Yellow
+            Write-Host '       cd ~/.openspace; pip install -e .' -ForegroundColor Yellow
+        } else {
+            Write-Host '     instalado via uv tool (git+https).' -ForegroundColor Green
+        }
+    }
+
+    if (-not (Test-Path $openspaceWorkspace)) {
+        New-Item -ItemType Directory -Path $openspaceWorkspace | Out-Null
+    }
 
     $mcpFile = Join-Path $claudeDir 'mcp.json'
     if (-not (Test-Path $mcpFile)) {
-        @'
+        $mcpJson = @"
 {
   "mcpServers": {
     "mempalace": {
       "command": "mempalace",
       "args": ["mcp"]
+    },
+    "openspace": {
+      "command": "openspace-mcp",
+      "toolTimeout": 600,
+      "env": {
+        "OPENSPACE_HOST_SKILL_DIRS": "$($capturedTarget -replace '\\','\\\\')",
+        "OPENSPACE_WORKSPACE": "$($openspaceWorkspace -replace '\\','\\\\')"
+      }
     }
   }
 }
-'@ | Out-File -FilePath $mcpFile -Encoding utf8
-        Write-Host "  Criado $mcpFile" -ForegroundColor Green
+"@
+        $mcpJson | Out-File -FilePath $mcpFile -Encoding utf8
+        Write-Host "  Criado $mcpFile (mempalace + openspace)" -ForegroundColor Green
     } else {
-        Write-Host "  $mcpFile ja existe. Adicione 'mempalace' manualmente se ainda nao estiver." -ForegroundColor Yellow
+        Write-Host "  $mcpFile ja existe. Adicione 'mempalace' e 'openspace' manualmente se ainda nao estiver." -ForegroundColor Yellow
+        Write-Host "    OPENSPACE_HOST_SKILL_DIRS=$capturedTarget" -ForegroundColor Yellow
+        Write-Host "    OPENSPACE_WORKSPACE=$openspaceWorkspace" -ForegroundColor Yellow
     }
 } else {
     Write-Host ''

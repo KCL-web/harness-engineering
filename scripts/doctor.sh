@@ -43,15 +43,23 @@ fi
 
 echo ""
 echo "MCP servers:"
-check_cmd "mempalace" "mempalace" "uv tool install mempalace"
+check_cmd "mempalace"    "mempalace"    "uv tool install mempalace"
+check_cmd "openspace-mcp" "openspace-mcp" "uv tool install git+https://github.com/HKUDS/OpenSpace.git"
 
 echo ""
-echo "Skills symlink:"
+echo "Skills dirs:"
 if [[ -L "$HOME/.claude/skills/harness" || -d "$HOME/.claude/skills/harness" ]]; then
-    echo "  [OK]    ~/.claude/skills/harness"
+    echo "  [OK]    ~/.claude/skills/harness (curated)"
 else
     echo "  [FALTA] symlink ~/.claude/skills/harness"
     echo "          Rode: ./scripts/setup.sh"
+    any_missing=1
+fi
+if [[ -d "$HOME/.claude/skills/captured" ]]; then
+    echo "  [OK]    ~/.claude/skills/captured (captured — OpenSpace)"
+else
+    echo "  [FALTA] ~/.claude/skills/captured"
+    echo "          Rode: ./scripts/setup.sh (cria o diretório vazio)"
     any_missing=1
 fi
 

@@ -46,16 +46,25 @@ if (Get-Command rtk -ErrorAction SilentlyContinue) {
 
 Write-Host ''
 Write-Host 'MCP servers:' -ForegroundColor Yellow
-Check-Cmd 'mempalace' 'mempalace' 'uv tool install mempalace' | Out-Null
+Check-Cmd 'mempalace'     'mempalace'     'uv tool install mempalace' | Out-Null
+Check-Cmd 'openspace-mcp' 'openspace-mcp' 'uv tool install git+https://github.com/HKUDS/OpenSpace.git' | Out-Null
 
 Write-Host ''
-Write-Host 'Skills junction:' -ForegroundColor Yellow
+Write-Host 'Skills dirs:' -ForegroundColor Yellow
 $skillsLink = Join-Path $env:USERPROFILE '.claude\skills\harness'
 if (Test-Path $skillsLink) {
-    Write-Host "  [OK]    $skillsLink" -ForegroundColor Green
+    Write-Host "  [OK]    $skillsLink (curated)" -ForegroundColor Green
 } else {
     Write-Host "  [FALTA] junction ~/.claude/skills/harness" -ForegroundColor Red
     Write-Host '          Rode: .\scripts\setup.ps1' -ForegroundColor Yellow
+    $anyMissing = $true
+}
+$capturedDir = Join-Path $env:USERPROFILE '.claude\skills\captured'
+if (Test-Path $capturedDir) {
+    Write-Host "  [OK]    $capturedDir (captured - OpenSpace)" -ForegroundColor Green
+} else {
+    Write-Host "  [FALTA] ~/.claude/skills/captured" -ForegroundColor Red
+    Write-Host '          Rode: .\scripts\setup.ps1 (cria o diretorio vazio)' -ForegroundColor Yellow
     $anyMissing = $true
 }
 

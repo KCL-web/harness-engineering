@@ -40,6 +40,7 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | Código frontend (React, Vite, SCSS, RHF, zod, BEM, aliases) | `stack-react-vite-scss` |
 | Código backend (Django, DRF, JWT) | `stack-django-drf-jwt` |
 | Memória cross-projeto (wings/rooms/drawers, MemPalace) | `memory-palace` |
+| Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
 
 ## Onde buscar configuração do projeto
 

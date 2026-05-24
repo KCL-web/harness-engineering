@@ -11,6 +11,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CLAUDE_DIR="$HOME/.claude"
 CLAUDE_SKILLS_DIR="$CLAUDE_DIR/skills"
 SKILLS_TARGET="$CLAUDE_SKILLS_DIR/harness"
+CAPTURED_TARGET="$CLAUDE_SKILLS_DIR/captured"
 REPO_SKILLS="$REPO_ROOT/skills"
 SKIP_MCP="${SKIP_MCP:-0}"
 FORCE="${FORCE:-0}"
@@ -53,6 +54,11 @@ if [[ ! -L "$SKILLS_TARGET" ]]; then
 fi
 echo "  $SKILLS_TARGET -> $REPO_SKILLS"
 
+# Diretório para skills CAPTURED pelo OpenSpace (untracked, local da máquina).
+# Mantido separado do curated para não poluir o repo.
+mkdir -p "$CAPTURED_TARGET"
+echo "  $CAPTURED_TARGET (captured skills do OpenSpace)"
+
 # --- 3. RTK (Rust Token Killer) --------------------------------------------
 echo ""
 echo "[3/5] Instalando RTK..."
@@ -84,23 +90,43 @@ if [[ "$SKIP_MCP" != "1" ]]; then
         echo "  Falha ao instalar mempalace. Ver: https://github.com/mempalace/mempalace"
     fi
 
-    echo "  -> openspace (Fase 5 — placeholder)"
+    echo "  -> openspace"
+    if command -v openspace-mcp >/dev/null 2>&1; then
+        echo "     openspace-mcp já instalado."
+    elif uv tool install "git+https://github.com/HKUDS/OpenSpace.git" >/dev/null 2>&1; then
+        echo "     instalado via uv tool (git+https)."
+    else
+        echo "     Falha ao instalar openspace via uv. Manual:"
+        echo "       git clone https://github.com/HKUDS/OpenSpace.git ~/.openspace"
+        echo "       cd ~/.openspace && pip install -e ."
+    fi
 
     mcp_file="$CLAUDE_DIR/mcp.json"
     if [[ ! -f "$mcp_file" ]]; then
-        cat > "$mcp_file" <<'EOF'
+        cat > "$mcp_file" <<EOF
 {
   "mcpServers": {
     "mempalace": {
       "command": "mempalace",
       "args": ["mcp"]
+    },
+    "openspace": {
+      "command": "openspace-mcp",
+      "toolTimeout": 600,
+      "env": {
+        "OPENSPACE_HOST_SKILL_DIRS": "$CAPTURED_TARGET",
+        "OPENSPACE_WORKSPACE": "$HOME/.openspace-workspace"
+      }
     }
   }
 }
 EOF
-        echo "  Criado $mcp_file"
+        mkdir -p "$HOME/.openspace-workspace"
+        echo "  Criado $mcp_file (mempalace + openspace)"
     else
-        echo "  $mcp_file já existe. Adicione 'mempalace' manualmente se ainda não tiver."
+        echo "  $mcp_file já existe. Adicione 'mempalace' e 'openspace' manualmente se ainda não tiver."
+        echo "    OPENSPACE_HOST_SKILL_DIRS=$CAPTURED_TARGET"
+        echo "    OPENSPACE_WORKSPACE=$HOME/.openspace-workspace"
     fi
 else
     echo ""

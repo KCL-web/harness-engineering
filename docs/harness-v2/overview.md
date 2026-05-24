@@ -38,7 +38,8 @@ harness-engineering/                       (este repo)
 │   ├── ratchet-feature-list/              ← .harness/ contract
 │   ├── stack-react-vite-scss/             ← archetype frontend
 │   ├── stack-django-drf-jwt/              ← archetype backend (esqueleto)
-│   └── memory-palace/                     ← wings/rooms/drawers, cadência MemPalace
+│   ├── memory-palace/                     ← wings/rooms/drawers, cadência MemPalace
+│   └── evolving-skills/                   ← FIX/DERIVED/CAPTURED, promoção curated/evolved
 ├── bootstrap/
 │   └── prompt.md                          ← novo bootstrap slim (Fase 6)
 ├── templates/                             ← skeletons que projeto novo copia
@@ -58,9 +59,11 @@ harness-engineering/                       (este repo)
 
 ### Onde mora cada coisa
 
-- **Global por máquina** (`~/.claude/skills/harness/` via junction): tudo em `skills/`.
-- **Global por máquina** (`~/.claude/mcp.json`): MemPalace e (Fase 5) OpenSpace.
+- **Global por máquina, curated** (`~/.claude/skills/harness/` via junction): tudo em `skills/` deste repo.
+- **Global por máquina, evolved** (`~/.claude/skills/captured/`): skills auto-geradas pelo OpenSpace (FIX/DERIVED/CAPTURED). Untracked, separadas das curated para evitar poluir o repo. Ver `evolving-skills` para promoção.
+- **Global por máquina** (`~/.claude/mcp.json`): MemPalace e OpenSpace.
 - **Palace global** (`~/.mempalace/` ou similar): memória *verbatim* de decisões cross-projeto.
+- **Workspace do OpenSpace** (`~/.openspace-workspace/`): estado interno do OpenSpace (lineage, métricas de evolução).
 - **Local no projeto** (`.gsd/`): apenas o que é único daquele projeto. CONVENTIONS.md some — referencia archetype.
 - **Local no projeto** (`.harness/feature_list.json`, `baseline.json`): contrato dev↔QA, mantido como na v1.
 
@@ -87,15 +90,14 @@ cd harness-engineering
 O setup:
 
 1. Valida `git`, `gh`, `python 3.9+`, `uv`, `node`.
-2. Cria junction (Windows) / symlink (Unix): `~/.claude/skills/harness` → `<repo>/skills`.
+2. Cria junction (Windows) / symlink (Unix) `~/.claude/skills/harness` → `<repo>/skills`, e o diretório `~/.claude/skills/captured/` para skills evolved.
 3. Instala **RTK** (Rust Token Killer) — CLI proxy que filtra/comprime saída de comandos antes de chegar ao contexto do LLM, reduzindo 60–90% dos tokens em operações comuns (`git status`, `ls`, `pytest`, etc.).
-4. `uv tool install mempalace`.
-5. Configura `~/.claude/mcp.json` com `mempalace`.
-6. Roda `doctor.ps1` / `doctor.sh` ao final.
+4. Instala MCPs (`uv tool install mempalace` + `uv tool install git+https://github.com/HKUDS/OpenSpace.git`) e escreve `~/.claude/mcp.json` com ambos. OpenSpace é apontado para `~/.claude/skills/captured/` via `OPENSPACE_HOST_SKILL_DIRS`.
+5. Roda `doctor.ps1` / `doctor.sh` ao final.
 
 **Atualizar skills depois:** `git pull` no repo. Junction continua válida.
 
-**Atualizar MCPs:** `uv tool upgrade mempalace`.
+**Atualizar MCPs:** `uv tool upgrade mempalace` / `uv tool upgrade openspace`.
 
 **Atualizar RTK:** `brew upgrade rtk` ou rode o instalador upstream novamente.
 
@@ -105,7 +107,7 @@ O setup:
 | --- | --- | --- |
 | **RTK** (rtk-ai/rtk) | CLI proxy que reduz consumo de tokens do agente em 60–90% | `brew install rtk` ou instalador upstream |
 | **MemPalace** | Memória *verbatim* cross-projeto via MCP | `uv tool install mempalace` |
-| **OpenSpace** (Fase 5) | Skills evolutivas (FIX/DERIVED/CAPTURED) | TBD |
+| **OpenSpace** (HKUDS) | Skills evolutivas (FIX/DERIVED/CAPTURED) via MCP | `uv tool install git+https://github.com/HKUDS/OpenSpace.git` |
 
 ---
 
@@ -118,7 +120,7 @@ O setup:
 | 2 | `stack-react-vite-scss` completo | ✅ |
 | 3 | `stack-django-drf-jwt` esqueleto | ✅ |
 | 4 | MemPalace MCP rodando + Wings convencionadas | ✅ |
-| 5 | OpenSpace MCP + skills evolutivas | ⏳ |
+| 5 | OpenSpace MCP + skills evolutivas | ✅ |
 | 6 | Bootstrap refatorado + AGENTS.md slim | ⏳ |
 | 7 | Migração de projetos existentes | ⏳ |
 
