@@ -41,9 +41,10 @@ harness-engineering/                       (este repo)
 │   ├── memory-palace/                     ← wings/rooms/drawers, cadência MemPalace
 │   └── evolving-skills/                   ← FIX/DERIVED/CAPTURED, promoção curated/evolved
 ├── bootstrap/
-│   └── prompt.md                          ← novo bootstrap slim (Fase 6)
+│   └── prompt.md                          ← bootstrap slim (entrevista referencia skills)
 ├── templates/                             ← skeletons que projeto novo copia
 │   ├── SPEC.md
+│   ├── STACK.md
 │   ├── ROADMAP.md
 │   ├── feature_list.json
 │   └── baseline.json
@@ -54,7 +55,7 @@ harness-engineering/                       (este repo)
 │   ├── harness-sync.sh                    ← (legado v1)
 │   └── check-harness.sh                   ← validador de feature_list/baseline
 ├── docs/harness-v2/                       ← documentação do novo sistema
-└── AGENTS.md                              ← reduzido para ~30 linhas na Fase 6
+└── AGENTS.md                              ← slim (~40 linhas, aponta para skills)
 ```
 
 ### Onde mora cada coisa
@@ -121,7 +122,7 @@ O setup:
 | 3 | `stack-django-drf-jwt` esqueleto | ✅ |
 | 4 | MemPalace MCP rodando + Wings convencionadas | ✅ |
 | 5 | OpenSpace MCP + skills evolutivas | ✅ |
-| 6 | Bootstrap refatorado + AGENTS.md slim | ⏳ |
+| 6 | Bootstrap refatorado + AGENTS.md slim | ✅ |
 | 7 | Migração de projetos existentes | ⏳ |
 
 ---

@@ -1,0 +1,10 @@
+{
+  "updated_at": "YYYY-MM-DD",
+  "metrics": {
+    "tests_passing":    { "value": 0, "better": "higher" },
+    "coverage_percent": { "value": 0, "better": "higher" },
+    "lint_warnings":    { "value": 0, "better": "lower" },
+    "type_errors":      { "value": 0, "better": "lower" }
+  },
+  "rule": "Cada métrica só pode mover na direção 'better'. Para regredir uma métrica intencionalmente, documente o motivo no build log e atualize este arquivo no mesmo PR."
+}
