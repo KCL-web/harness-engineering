@@ -123,7 +123,9 @@ O setup:
 | 4 | MemPalace MCP rodando + Wings convencionadas | ✅ |
 | 5 | OpenSpace MCP + skills evolutivas | ✅ |
 | 6 | Bootstrap refatorado + AGENTS.md slim | ✅ |
-| 7 | Migração de projetos existentes | ⏳ |
+| 7 | Migração de projetos existentes | ✅ |
+
+Guia passo-a-passo da migração v1 → v2: [`migration.md`](./migration.md).
 
 ---
 
