@@ -90,6 +90,58 @@ if [[ "$SKIP_MCP" != "1" ]]; then
         echo "  Falha ao instalar mempalace. Ver: https://github.com/mempalace/mempalace"
     fi
 
+    # Auto-save hooks (Claude Code Stop + PreCompact).
+    # Indexam transcripts automaticamente, evitando perda de contexto entre sessões.
+    hooks_dir="$CLAUDE_DIR/hooks/mempalace"
+    mkdir -p "$hooks_dir"
+    hooks_base="https://raw.githubusercontent.com/MemPalace/mempalace/master/hooks"
+    save_hook="$hooks_dir/mempal_save_hook.sh"
+    precompact_hook="$hooks_dir/mempal_precompact_hook.sh"
+    for h in mempal_save_hook.sh mempal_precompact_hook.sh; do
+        if [[ ! -f "$hooks_dir/$h" || "$FORCE" == "1" ]]; then
+            if curl -fsSL -o "$hooks_dir/$h" "$hooks_base/$h" 2>/dev/null; then
+                chmod +x "$hooks_dir/$h"
+                echo "     hook baixado: $hooks_dir/$h"
+            else
+                echo "     Falha ao baixar $h (offline?). Baixe manualmente de $hooks_base/$h"
+            fi
+        fi
+    done
+
+    # Wire hooks em ~/.claude/settings.json se ainda não estiver.
+    settings_file="$CLAUDE_DIR/settings.json"
+    if [[ ! -f "$settings_file" ]]; then
+        cat > "$settings_file" <<EOF
+{
+  "hooks": {
+    "Stop": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
+        "command": "$save_hook",
+        "timeout": 30
+      }]
+    }],
+    "PreCompact": [{
+      "hooks": [{
+        "type": "command",
+        "command": "$precompact_hook",
+        "timeout": 30
+      }]
+    }]
+  }
+}
+EOF
+        echo "     auto-save wired em $settings_file (arquivo criado)."
+    elif grep -q "mempal_save_hook" "$settings_file" 2>/dev/null; then
+        echo "     auto-save já configurado em $settings_file."
+    else
+        echo "     $settings_file já existe — não vou sobrescrever."
+        echo "     Adicione manualmente (ou rode /update-config no Claude Code):"
+        echo "       Stop hook    → $save_hook"
+        echo "       PreCompact   → $precompact_hook"
+    fi
+
     echo "  -> openspace"
     if command -v openspace-mcp >/dev/null 2>&1; then
         echo "     openspace-mcp já instalado."
