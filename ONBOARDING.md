@@ -91,10 +91,7 @@ Se o STACK aponta um archetype skill (ex.: `stack-react-vite-scss`), é essa ski
 
 > Note: **`.gsd/CONVENTIONS.md` não existe mais na v2**. As convenções de código vêm da skill `stack-<archetype>` correspondente, carregada automaticamente pelo Claude.
 
-Em projetos **multi-repo (umbrella)**, a raiz do workspace tem:
-
-- `PRODUCT.md` — visão única do produto, compartilhada por todos os sub-repos.
-- `INTEGRATION.md` — contratos cross-repo (API, auth, deploy order).
+> Se o projeto faz parte de um workspace umbrella (raro em uso solo — MemPalace resolve cross-projeto sem precisar de arquivos versionados), veja `bootstrap/prompt.md` no repo do harness, seção "Modo avançado".
 
 ---
 

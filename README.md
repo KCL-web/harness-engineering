@@ -17,7 +17,7 @@ Sem um harness, toda sessão de IA começa do zero: o agente inventa convençõe
 - Convenções de stack (folder layout, componentes, testes) vivem em skills `stack-*` e podem evoluir automaticamente via OpenSpace conforme o uso.
 - Comandos de shell viram 60–90% mais baratos em tokens via RTK (CLI proxy transparente).
 
-Três modos de workspace são suportados — apps solo, produtos full-stack espalhados por vários repos, ou sub-repos dentro de um umbrella.
+Default é single-repo (cobre uso solo e a maioria dos projetos). Suporte a modos umbrella/sub-repo existe como avançado, para times que compartilham produto entre vários repos.
 
 ---
 
@@ -150,19 +150,11 @@ harness-engineering/
 
 ---
 
-## Modos de workspace
+## Modo de workspace
 
-### single-repo
+Por padrão: **single-repo** — um repo Git, uma stack, skills carregadas globalmente. É o que cobre 99% dos casos (incluindo todos os usos solo).
 
-Caso padrão. Um repo Git, uma stack. Sessões começam dentro do repo com as skills carregadas pelo Claude Code automaticamente.
-
-### umbrella
-
-Pasta de workspace (não é repo Git) com múltiplos repos independentes servindo um produto. Carrega `PRODUCT.md` (visão única) e `INTEGRATION.md` (contratos cross-repo). Operações cruzadas (ex.: feature que toca API + UI) começam aqui; bug fix de um repo só começa dentro daquele repo.
-
-### sub-repo
-
-Repo Git que vive dentro de um workspace umbrella. SPEC dele começa com "Este repo entrega <fatia X> do produto definido em `../PRODUCT.md`". O bootstrap em modo sub-repo lê `../PRODUCT.md` e `../INTEGRATION.md` antes de entrevistar.
+> **Modos avançados (umbrella / sub-repo).** Time que compartilha produto entre vários repos Git independentes e precisa de `PRODUCT.md`/`INTEGRATION.md` versionados na raiz do workspace. Para uso solo cross-projeto, **MemPalace cobre o papel** com busca semântica — basta wing por projeto. Detalhe em [`bootstrap/prompt.md`](bootstrap/prompt.md), seção "Modo avançado".
 
 ---
 
