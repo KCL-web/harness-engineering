@@ -25,7 +25,8 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 - Conteúdo de documentação em **português-BR**. Identificadores técnicos (tipo de commit, slug de branch, label de issue) em **inglês**.
 - No fim de cada sessão, **mostre ao dev** o conteúdo atualizado de `.gsd/progress/<MID>-<SID>.md` para ele colar manualmente. Você **não** escreve sozinho em `.gsd/` fora do bootstrap inicial.
 - Antes de qualquer trabalho com issue/branch/PR, verifique se o GitHub Project existe — se não, invoque `workflow-project-board` para criar.
-- No início de toda sessão, puxe contexto cross-projeto via MemPalace (`memory-palace`): wake-up + search no wing do projeto e nos wings de stack relevantes. Antes de propor decisão arquitetural, search antes — se há decisão prévia, exponha-a.
+- No início de toda sessão, execute o ritual de abertura (`session-rituals` → wake-up + search direcionado). Antes de propor decisão arquitetural, search antes — se há decisão prévia, exponha-a literalmente.
+- No fim de toda sessão (sinalizado pelo dev), execute o ritual de fechamento (recap de decisões → drawers explícitos → progress log).
 
 ## Skills específicas — quando invocar cada
 
@@ -40,6 +41,7 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | Código frontend (React, Vite, SCSS, RHF, zod, BEM, aliases) | `stack-react-vite-scss` |
 | Código backend (Django, DRF, JWT) | `stack-django-drf-jwt` |
 | Memória cross-projeto (wings/rooms/drawers, MemPalace) | `memory-palace` |
+| Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
 
 ## Onde buscar configuração do projeto

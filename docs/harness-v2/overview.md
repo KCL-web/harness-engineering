@@ -39,6 +39,7 @@ harness-engineering/                       (este repo)
 │   ├── stack-react-vite-scss/             ← archetype frontend
 │   ├── stack-django-drf-jwt/              ← archetype backend (esqueleto)
 │   ├── memory-palace/                     ← wings/rooms/drawers, cadência MemPalace
+│   ├── session-rituals/                   ← rituais de abertura/fechamento de sessão
 │   └── evolving-skills/                   ← FIX/DERIVED/CAPTURED, promoção curated/evolved
 ├── bootstrap/
 │   └── prompt.md                          ← bootstrap slim (entrevista referencia skills)
