@@ -15,7 +15,7 @@ As skills cobrem o operacional. O que sobra aqui são contratos que toda sessão
    - O bootstrap inicial (ver `bootstrap/prompt.md`), que tem permissão de Write/Edit em `.gsd/` e `.harness/`.
    - Comandos que o dev pediu explicitamente para executar.
 3. **Validação do projeto passa antes de cada commit.** O comando único de validação está em `.gsd/STACK.md`. Tarefa sem validação verde não é tarefa pronta.
-4. **Nunca pushe direto** para `main` ou `preview`. Tudo via PR de `feat/*` → `preview` → `main`. Detalhes em `workflow-branching` e `workflow-prs`.
+4. **Nunca pushe direto** para `main` ou `develop`. Tudo via PR de `feat/*` → `develop` → `main`. Detalhes em `workflow-branching` e `workflow-prs`.
 5. **Search antes de decidir.** Antes de propor decisão arquitetural relevante, consulte memória (`memory-palace` → `mempalace_search`). Se há decisão prévia, exponha-a.
 
 ---

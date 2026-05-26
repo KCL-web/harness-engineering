@@ -55,7 +55,7 @@ Valores atuais de métricas de qualidade que **só podem melhorar** (quality rat
 ## Regras inegociáveis
 
 - `title` e `criteria[]` de uma feature ficam **congelados** após a issue ser aberta. Se o requisito mudar de verdade: feche a feature e crie uma nova com novo ID.
-- PR **não pode mergear** em `preview` enquanto qualquer feature linkada tiver `verified: false`.
+- PR **não pode mergear** em `develop` enquanto qualquer feature linkada tiver `verified: false`.
 - Nenhuma métrica em `baseline.json` pode regredir sem motivo documentado no body do PR e no build log do mesmo PR.
 - Sessão dev **nunca** vira `verified: true` — isso é só de QA.
 - Todo PR voltado para usuário precisa linkar ao menos um feature ID; PRs de chore/tooling/refactor podem não ter nenhum.
@@ -73,7 +73,7 @@ Valores atuais de métricas de qualidade que **só podem melhorar** (quality rat
 Roda:
 
 - Local: `bash scripts/check-harness.sh`
-- CI: `.github/workflows/harness-gate.yml` em todo PR para `main` ou `preview`
+- CI: `.github/workflows/harness-gate.yml` em todo PR para `main` ou `develop`
 
 ## Fluxo
 
@@ -86,13 +86,13 @@ Atualiza baseline.json se métricas melhoraram
    ↓
 PR aberto → CI valida via check-harness.sh
    ↓
-Senior aprova merge em preview
+Senior aprova merge em develop
    ↓
-Sessão QA roda critérios contra app rodando em preview
+Sessão QA roda critérios contra app rodando em develop
    ↓
 QA marca verified: true (ou adiciona notes em falha)
    ↓
-PR preview → main pode mergear (só agora)
+PR develop → main pode mergear (só agora)
 ```
 
 ## Por que duas sessões, dois arquivos

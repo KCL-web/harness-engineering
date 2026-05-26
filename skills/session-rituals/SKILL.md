@@ -35,7 +35,7 @@ Se não retornar nada, declare em uma linha: "Sem decisões prévias sobre X no 
 
 Para tasks de código (não conversa pura), confirme rapidamente:
 
-- Branch atual via `git branch --show-current` (devo estar em `feat/*`, não em `main`/`preview`).
+- Branch atual via `git branch --show-current` (devo estar em `feat/*`, não em `main`/`develop`).
 - Validação passa atualmente (`<comando de validação do .gsd/STACK.md>`). Se falha, **dizer ao dev** — não tente trabalhar em código quebrado.
 
 Isso é leve (3 a 4 segundos de tool calls) e evita gastar 20 mensagens depois descobrindo que a branch errada está checada out.

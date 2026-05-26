@@ -92,6 +92,6 @@ Regras dos campos:
 
 - `value` — medição atual (precisa ser número)
 - `better` — precisa ser `"higher"` ou `"lower"`; diz para `scripts/check-harness.sh` qual direção conta como regressão
-- O script lê a versão anterior da branch base (`preview` por padrão) e falha o PR se qualquer métrica se moveu contra sua direção `better`
+- O script lê a versão anterior da branch base (`develop` por padrão) e falha o PR se qualquer métrica se moveu contra sua direção `better`
 
 Adicione ou remova métricas conforme a stack. Adições comuns: `bundle_size_kb` (`lower`), `cyclomatic_complexity_max` (`lower`), `dead_code_count` (`lower`), `accessibility_violations` (`lower`), `lighthouse_performance` (`higher`).

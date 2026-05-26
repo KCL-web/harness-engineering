@@ -30,7 +30,7 @@ A v2 ataca isso com três mecanismos:
 harness-engineering/                       (este repo)
 ├── skills/                                ← junction → ~/.claude/skills/harness/
 │   ├── harness-index/                     ← AGENTS.md condensado
-│   ├── workflow-branching/                ← preview/main, naming
+│   ├── workflow-branching/                ← develop/main, naming
 │   ├── workflow-issues/                   ← template, ciclo no project
 │   ├── workflow-prs/                      ← Closes #N, validação
 │   ├── workflow-commits/                  ← Conventional Commits

@@ -164,10 +164,10 @@ Skills cobrem o detalhe. Resumo:
 
 | Disciplina | Skill |
 | --- | --- |
-| Branching (`feat/*` → `preview` → `main`) | `workflow-branching` |
+| Branching (`feat/*` → `develop` → `main`) | `workflow-branching` |
 | Commits (Conventional Commits, inglês, ≤72 chars) | `workflow-commits` |
 | Issues (template, marcador `Task: <MID>-<SID>-<TID>`) | `workflow-issues` |
-| PRs (`Closes #N`, validação verde, base = `preview`) | `workflow-prs` |
+| PRs (`Closes #N`, validação verde, base = `develop`) | `workflow-prs` |
 | Project board (6 colunas: Backlog→Done) | `workflow-project-board` |
 | Feature list e baseline (ratchet de qualidade) | `ratchet-feature-list` |
 | Memória cross-projeto (decisões, postmortems) | `memory-palace` |
@@ -196,7 +196,7 @@ Claude Code não rescaneia mid-session. Saia e abra de novo (ou reinicie a IDE).
 Rode `./scripts/setup.sh` (idempotente). Para reinstalar uma só: `uv tool upgrade mempalace` / `uv tool upgrade openspace` / `brew upgrade rtk`.
 
 **Migrar um projeto v1 quebrou alguma decisão customizada.**
-Você pulou o passo 2 do guia (salvar drawer no MemPalace antes de apagar `CONVENTIONS.md`). Rollback: `git checkout preview && git branch -D chore/harness-v2-migration`. Refaça lendo o guia com calma.
+Você pulou o passo 2 do guia (salvar drawer no MemPalace antes de apagar `CONVENTIONS.md`). Rollback: `git checkout develop && git branch -D chore/harness-v2-migration`. Refaça lendo o guia com calma.
 
 **Stack inusual sem archetype matching (Rust+Axum, Go+Echo, Elixir+Phoenix...).**
 OK. Em `.gsd/STACK.md`, deixe "Archetype skill correspondente: nenhum ainda — convenções emergem via OpenSpace (skill `evolving-skills`)". As regras universais (workflow, ratchet, memória) continuam funcionando agnósticas de stack.

@@ -1,14 +1,14 @@
 ---
 name: workflow-prs
-description: Como abrir PR no harness (título em Conventional Commits, body com Closes #N, validação obrigatória). Cobre PR feat/* → preview (obrigatório antes de In Review) e PR preview → main (produção). Invoque ao abrir PR, escrever título/body, ou diagnosticar PR rejeitado.
+description: Como abrir PR no harness (título em Conventional Commits, body com Closes #N, validação obrigatória). Cobre PR feat/* → develop (obrigatório antes de In Review) e PR develop → main (produção). Invoque ao abrir PR, escrever título/body, ou diagnosticar PR rejeitado.
 ---
 
 # Workflow: PRs
 
 ## Quando abrir cada tipo de PR
 
-- **`feat/*` (ou `fix/*`, `chore/*`, etc.) → `preview`**: obrigatório antes de mover issue para In Review.
-- **`preview` → `main`**: obrigatório antes de deployar para produção. Aprovação do senior necessária.
+- **`feat/*` (ou `fix/*`, `chore/*`, etc.) → `develop`**: obrigatório antes de mover issue para In Review.
+- **`develop` → `main`**: obrigatório antes de deployar para produção. Aprovação do senior necessária.
 
 ## Título do PR
 
@@ -43,11 +43,11 @@ Closes #<outro-numero-se-houver>
 ## Regras
 
 - Cada issue fechada precisa de uma linha `Closes #N` **separada** (uma por linha). Um PR pode fechar várias issues relacionadas.
-- PR sem `Closes #N` em pelo menos uma issue não deve ser aprovado (exceção: PR `preview → main`, que agrega várias).
+- PR sem `Closes #N` em pelo menos uma issue não deve ser aprovado (exceção: PR `develop → main`, que agrega várias).
 - PR em que o comando de validação do projeto falha **nunca** é aprovado.
-- PR não pode mergear em `preview` enquanto qualquer feature linkada tiver `verified: false` no `feature_list.json`.
+- PR não pode mergear em `develop` enquanto qualquer feature linkada tiver `verified: false` no `feature_list.json`.
 - Nenhuma métrica em `baseline.json` pode regredir sem motivo documentado no body do PR e no build log (`.gsd/progress/`).
-- Nunca force push (`push --force`) em `main` ou `preview`. Em branches `feat/*` próprias, só se o dev pedir.
+- Nunca force push (`push --force`) em `main` ou `develop`. Em branches `feat/*` próprias, só se o dev pedir.
 - Nunca skip hooks (`--no-verify`) a menos que o dev peça explicitamente.
 
 ## Comando
@@ -62,13 +62,13 @@ gh pr create --title "feat(scope): description" --body "$(cat <<'EOF'
 
 Closes #N
 EOF
-)" --base preview
+)" --base develop
 ```
 
-Para PR `preview → main`:
+Para PR `develop → main`:
 
 ```bash
-gh pr create --title "release: <data ou versão>" --body "..." --base main --head preview
+gh pr create --title "release: <data ou versão>" --body "..." --base main --head develop
 ```
 
 ## Ao receber feedback no PR

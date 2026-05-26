@@ -62,9 +62,9 @@ Modo single-repo é o padrão — use sempre que puder. Modo umbrella custa mais
 
 ### Ordem de merge
 
-- O repo que **define** um contrato (ex.: um endpoint de API) mergeia para `preview` primeiro.
+- O repo que **define** um contrato (ex.: um endpoint de API) mergeia para `develop` primeiro.
 - O repo que **consome** o contrato vem depois, com a descrição do PR anotando a dependência.
-- Nunca mergeie um consumidor antes do contrato estar disponível em `preview`.
+- Nunca mergeie um consumidor antes do contrato estar disponível em `develop`.
 
 ### Validação
 

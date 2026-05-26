@@ -50,9 +50,9 @@ Regra: o repo dono é a fonte de verdade. Consumidores nunca definem um tipo ou 
 
 > Quando uma feature atravessa repos, em que ordem os deploys saem?
 
-1. &lt;repo que entrega o contrato&gt; → `preview`
-2. &lt;repo que consome o contrato&gt; → `preview`
-3. Depois dos dois validados em preview: ambos → `main`
+1. &lt;repo que entrega o contrato&gt; → `develop`
+2. &lt;repo que consome o contrato&gt; → `develop`
+3. Depois dos dois validados em develop: ambos → `main`
 
 Regra: nunca deploy de consumidor para produção antes do contrato.
 

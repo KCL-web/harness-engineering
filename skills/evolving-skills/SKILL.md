@@ -79,7 +79,7 @@ Quando uma skill em `~/.claude/skills/captured/` provou seu valor (você usou v�
 2. **Decida o nome curado** — não use o slug auto-gerado. Pense no namespace (`workflow-*`, `stack-*`, etc.).
 3. **Copie** para `<repo>/skills/<nome-novo>/SKILL.md`.
 4. **Registre** em `skills/harness-index/SKILL.md` na tabela "Skills específicas".
-5. **PR para `preview`** com tipo `feat` (nova skill) ou `refactor` (substitui uma curada).
+5. **PR para `develop`** com tipo `feat` (nova skill) ou `refactor` (substitui uma curada).
 6. **Apague** a versão em `~/.claude/skills/captured/<slug>/` para evitar duplicata na próxima sessão.
 
 ## Regras inegociáveis

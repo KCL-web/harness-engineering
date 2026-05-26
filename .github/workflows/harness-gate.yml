@@ -2,7 +2,7 @@ name: Harness gate
 
 on:
   pull_request:
-    branches: [main, preview]
+    branches: [main, develop]
 
 permissions:
   contents: read

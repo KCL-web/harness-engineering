@@ -99,11 +99,11 @@ Se o STACK aponta um archetype skill (ex.: `stack-react-vite-scss`), é essa ski
 
 ```
 1. Pega uma issue do board → move pra "In Progress"
-2. git checkout preview && git pull
+2. git checkout develop && git pull
 3. git checkout -b <type>/<slug>   (ver skill workflow-branching)
 4. Trabalha; valida antes de cada commit
 5. git push -u origin <branch>
-6. gh pr create --base preview --title "<type>(...): ..."
+6. gh pr create --base develop --title "<type>(...): ..."
 7. CI verde → review → merge → issue vira "Done"
 ```
 

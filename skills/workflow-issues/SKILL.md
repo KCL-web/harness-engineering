@@ -53,7 +53,7 @@ Checklist. Só vira Done quando todo item está marcado.
 | Priority | Ready e deve ser pegada em seguida |
 | In Progress | Branch criada, em trabalho ativo |
 | In Review | PR aberta, esperando revisão do orquestrador |
-| Done | PR mergeada em preview, issue fechada |
+| Done | PR mergeada em develop, issue fechada |
 
 ## Regras
 

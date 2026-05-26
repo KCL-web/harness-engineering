@@ -1,6 +1,6 @@
 ---
 name: workflow-branching
-description: Hierarquia de branches (main, preview, feat/*, fix/*, chore/*, refactor/*, test/*, docs/*), regras de naming kebab-case curto e fluxo do dev a partir de uma issue. Invoque ao criar branch, escolher nome, ou explicar o fluxo issue → branch → PR.
+description: Hierarquia de branches (main, develop, feat/*, fix/*, chore/*, refactor/*, test/*, docs/*), regras de naming kebab-case curto e fluxo do dev a partir de uma issue. Invoque ao criar branch, escolher nome, ou explicar o fluxo issue → branch → PR.
 ---
 
 # Workflow: branches
@@ -9,7 +9,7 @@ description: Hierarquia de branches (main, preview, feat/*, fix/*, chore/*, refa
 
 ```
 main        → produção, sempre estável e deployada
-preview     → staging, espelha o que está prestes a ir para main
+develop     → staging, espelha o que está prestes a ir para main
 feat/*      → branches de feature
 fix/*       → branches de bug fix
 chore/*     → tooling, config, dependências
@@ -20,8 +20,8 @@ docs/*      → só documentação
 
 ## Regras inegociáveis
 
-- `main` e `preview` são **protegidas**. Nunca push direto.
-- Sempre criar branch a partir de `preview`, **nunca** de `main`.
+- `main` e `develop` são **protegidas**. Nunca push direto.
+- Sempre criar branch a partir de `develop`, **nunca** de `main`.
 - Naming: kebab-case curto descrevendo o trabalho, não número da issue.
 - O tipo da branch precisa bater com o tipo dominante da issue (feat/fix/chore/etc).
 - Uma branch pode fechar várias issues relacionadas — listar com `Closes #N` separadas no body do PR.
@@ -47,8 +47,8 @@ feat/this-branch-name-is-way-too-long-and-says-everything-it-does
 ## Criar uma branch
 
 ```bash
-git checkout preview
-git pull origin preview
+git checkout develop
+git pull origin develop
 git checkout -b feat/<short-slug>
 ```
 
@@ -59,19 +59,19 @@ issue criada (Backlog)
    ↓
 issue priorizada (Ready → Priority)
    ↓
-branch criada a partir de preview
+branch criada a partir de develop
    ↓
 issue movida para In Progress (gh project item-edit)
    ↓
 trabalho local → comando de validação do projeto passa
    ↓
-commit(s) → push → PR feat/* → preview
+commit(s) → push → PR feat/* → develop
    ↓
 issue movida para In Review
    ↓
-PR aprovado → merge → preview deployado e validado
+PR aprovado → merge → develop deployado e validado
    ↓
-PR de preview → main (aprovação do senior)
+PR de develop → main (aprovação do senior)
    ↓
 PR aprovado → merge → main deployado
    ↓

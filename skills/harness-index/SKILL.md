@@ -1,6 +1,6 @@
 ---
 name: harness-index
-description: Índice das skills do harness-engineering. Carrega regras universais (branches preview/main, sessões dev/QA, validação antes de commit) e aponta para skills específicas (workflow-*, stack-*, ratchet-*). Invoque sempre que iniciar uma sessão em projeto que contém .gsd/ ou .harness/, ou quando o dev mencionar "harness".
+description: Índice das skills do harness-engineering. Carrega regras universais (branches develop/main, sessões dev/QA, validação antes de commit) e aponta para skills específicas (workflow-*, stack-*, ratchet-*). Invoque sempre que iniciar uma sessão em projeto que contém .gsd/ ou .harness/, ou quando o dev mencionar "harness".
 ---
 
 # Harness Index
@@ -32,7 +32,7 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 
 | O dev pediu… | Invoque |
 | --- | --- |
-| Criar branch, naming, hierarquia preview/main | `workflow-branching` |
+| Criar branch, naming, hierarquia develop/main | `workflow-branching` |
 | Abrir issue, template, ciclo Backlog→Done | `workflow-issues` |
 | Abrir PR, `Closes #N`, validação | `workflow-prs` |
 | Mensagem de commit (Conventional Commits) | `workflow-commits` |

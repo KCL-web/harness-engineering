@@ -60,8 +60,8 @@ cd ~/harness-engineering
 No projeto que vai migrar:
 
 ```bash
-git checkout preview
-git pull origin preview
+git checkout develop
+git pull origin develop
 git checkout -b chore/harness-v2-migration
 ```
 
@@ -171,11 +171,11 @@ Rode também o comando de validação do projeto (`.gsd/STACK.md` → seção "V
 git add AGENTS.md .gsd/
 git commit -m "chore: migrate to harness-v2 (skills + MCPs)"
 git push -u origin chore/harness-v2-migration
-gh pr create --base preview --title "chore: migrate to harness-v2" \
+gh pr create --base develop --title "chore: migrate to harness-v2" \
   --body "Migração v1 → v2 conforme ~/harness-engineering/docs/harness-v2/migration.md."
 ```
 
-PR é `chore`, vai para `preview` como qualquer outro. Como não toca código de feature, baseline e feature_list não regridem — gate do harness passa.
+PR é `chore`, vai para `develop` como qualquer outro. Como não toca código de feature, baseline e feature_list não regridem — gate do harness passa.
 
 ---
 
@@ -226,7 +226,7 @@ A skill `stack-*` é guia padrão, não bíblia. Decisão do projeto explícita 
 Se a migração quebrou alguma coisa não recuperável imediatamente:
 
 ```bash
-git checkout preview
+git checkout develop
 git branch -D chore/harness-v2-migration
 ```
 

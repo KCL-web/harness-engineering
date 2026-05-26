@@ -44,7 +44,7 @@ gh project link <project-number> --owner <owner> --repo <repo>
 | Priority | Ready e deve ser pegada em seguida |
 | In Progress | Branch criada, em trabalho ativo |
 | In Review | PR aberta, esperando revisão do orquestrador |
-| Done | PR mergeada em preview, issue fechada |
+| Done | PR mergeada em develop, issue fechada |
 
 ## Sincronia ROADMAP → GitHub
 
