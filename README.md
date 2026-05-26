@@ -56,7 +56,7 @@ Os scripts `.sh` precisam de **bash**. Use WSL (recomendado) ou Git Bash. PowerS
 
 ```bash
 # Linux / macOS / WSL
-git clone https://github.com/MatheusSlvRibeiro/harness-engineering ~/harness-engineering
+git clone https://git.kcl.net.br/kcl-web/harness-engineering ~/harness-engineering
 cd ~/harness-engineering
 ./scripts/setup.sh
 ./scripts/doctor.sh
@@ -64,7 +64,7 @@ cd ~/harness-engineering
 
 ```powershell
 # Windows nativo
-git clone https://github.com/MatheusSlvRibeiro/harness-engineering "$HOME\harness-engineering"
+git clone https://git.kcl.net.br/kcl-web/harness-engineering "$HOME\harness-engineering"
 cd "$HOME\harness-engineering"
 .\scripts\setup.ps1
 .\scripts\doctor.ps1
@@ -104,7 +104,7 @@ A entrevista de bootstrap:
   templates/feature_list.json   → .harness/feature_list.json
   templates/baseline.json       → .harness/baseline.json
   ```
-- No fim, opcionalmente sincroniza ROADMAP → GitHub (Project, milestones, issues).
+- No fim, opcionalmente sincroniza ROADMAP → Forgejo (Project, milestones, issues).
 
 > Note que **não existe mais `.gsd/CONVENTIONS.md`** na v2 — convenções de código vêm da skill `stack-<archetype>` que combina com a stack (`stack-react-vite-scss`, `stack-django-drf-jwt`, etc.). A entrevista identifica o archetype e registra em `STACK.md`.
 

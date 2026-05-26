@@ -7,10 +7,10 @@ description: Template de issue do harness (seções obrigatórias, marcador Task
 
 ## Template
 
-Toda issue do harness precisa ter estas seções (template em `.github/ISSUE_TEMPLATE/default.md`):
+Toda issue do harness precisa ter estas seções (template em `.forgejo/ISSUE_TEMPLATE/default.md`):
 
 ```markdown
-Task: M01-S02-T01     ← primeira linha, marcador para sincronia ROADMAP↔GitHub
+Task: M01-S02-T01     ← primeira linha, marcador para sincronia ROADMAP↔Forgejo
 
 ## Descrição
 Sobre o que é esta issue. Um parágrafo curto, linguagem direta.
@@ -59,25 +59,16 @@ Checklist. Só vira Done quando todo item está marcado.
 
 - Issue nunca vai para **In Review** sem PR aberta.
 - Issue nunca vai para **Done** sem PR mergeada.
-- Issue criada pela sincronia ROADMAP→GitHub carrega `Task: <MID>-<SID>-<TID>` na primeira linha do body (rastreável; impede duplicata).
+- Issue criada pela sincronia ROADMAP→Forgejo carrega `Task: <MID>-<SID>-<TID>` na primeira linha do body (rastreável; impede duplicata).
 - Issue criada manualmente também deve adicionar `Task:` se cobrir uma task do ROADMAP.
 - Antes de começar a trabalhar em uma issue, mova-a para In Progress.
 
-## Mover issue entre colunas via gh
+## Mover issue entre colunas
 
-```bash
-# Listar items do project para achar o item-id da issue
-gh project item-list <project-number> --owner <owner> --format json
+No Forgejo, o project board é gerenciado pela web UI:
+**`https://git.kcl.net.br/<owner>/<repo>/projects`**
 
-# Editar o status
-gh project item-edit \
-  --project-id <project-node-id> \
-  --id <item-id> \
-  --field-id <status-field-id> \
-  --single-select-option-id <option-id-da-coluna-destino>
-```
-
-(Os IDs ficam estáveis por projeto. Em projetos novos, capture-os no bootstrap e guarde em `.gsd/STACK.md` na seção "Notas".)
+Arraste a issue para a coluna correta. Não há CLI equivalente ao `gh project item-edit`.
 
 ## Skills relacionadas
 

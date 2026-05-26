@@ -1,41 +1,36 @@
 ---
 name: workflow-project-board
-description: Bootstrap do GitHub Project (6 colunas padrão), sincronia ROADMAP → milestones/issues, e automação via gh CLI. Invoque quando o dev pedir para criar project, sincronizar roadmap, mover issue de coluna, configurar campos, ou diagnosticar "project ausente".
+description: Bootstrap do Forgejo Project (6 colunas padrão), sincronia ROADMAP → milestones/issues, e operações via Forgejo API. Invoque quando o dev pedir para criar project, sincronizar roadmap, mover issue de coluna, configurar campos, ou diagnosticar "project ausente".
 ---
 
-# Workflow: GitHub Project board
+# Workflow: Forgejo Project board
+
+## Variáveis de ambiente necessárias
+
+```bash
+export FORGEJO_TOKEN=seu_token   # Settings → Applications → Generate Token
+export FORGEJO_URL=https://git.kcl.net.br
+export FORGEJO_ORG=kcl-web
+```
 
 ## Verificação no início da sessão
 
 Antes de qualquer trabalho com issue/branch/PR, verifique se o Project existe:
 
 ```bash
-gh project list --owner <owner>
+curl -s -H "Authorization: token $FORGEJO_TOKEN" \
+  "$FORGEJO_URL/api/v1/repos/$FORGEJO_ORG/<repo>/projects" | jq '.[].name'
 ```
 
-Se nenhum project corresponde ao repo, criar antes de qualquer outro trabalho.
+Se não retornar nenhum project, criar via web UI antes de continuar:
+**`https://git.kcl.net.br/<owner>/<repo>/projects`** → "New Project"
 
 ## Bootstrap — criar project do zero
 
-### 1. Criar
+O project board no Forgejo é criado e configurado pela **web UI**:
 
-```bash
-gh project create --owner <owner> --title "<repo-name>"
-```
-
-### 2. Linkar ao repositório
-
-```bash
-gh project link <project-number> --owner <owner> --repo <repo>
-```
-
-### 3. Configurar campos padrão
-
-- **Status** (single select): 6 colunas, nesta ordem exata
-- **Type** (single select): `feat`, `fix`, `chore`, `refactor`, `test`, `docs`
-- **Priority** (single select): `low`, `medium`, `high`
-
-## Colunas padrão (6, nesta ordem)
+1. Acesse `https://git.kcl.net.br/<owner>/<repo>/projects` → **"New Project"**
+2. Crie as 6 colunas padrão (nessa ordem):
 
 | Coluna | Significado |
 | --- | --- |
@@ -46,90 +41,104 @@ gh project link <project-number> --owner <owner> --repo <repo>
 | In Review | PR aberta, esperando revisão do orquestrador |
 | Done | PR mergeada em develop, issue fechada |
 
-## Sincronia ROADMAP → GitHub
+## Sincronia ROADMAP → Forgejo
 
 Procedimento determinístico que roda no fim do bootstrap e no início de cada sessão.
 
-### Passo 1 — Project
+### Passo 1 — Milestones
+
+Listar milestones existentes:
 
 ```bash
-gh project list --owner <owner> --format json
+curl -s -H "Authorization: token $FORGEJO_TOKEN" \
+  "$FORGEJO_URL/api/v1/repos/$FORGEJO_ORG/<repo>/milestones" \
+  | jq '[.[] | {id, title, state}]'
 ```
 
-Se nenhum project corresponde ao repo, criar (passos acima).
-
-### Passo 2 — Milestones
-
-Para cada milestone do `.gsd/ROADMAP.md` (M01, M02, ...):
+Se a milestone (título "M01 — <nome>") não existe, criar:
 
 ```bash
-gh api repos/<owner>/<repo>/milestones --jq '.[].title'
+curl -s -X POST \
+  -H "Authorization: token $FORGEJO_TOKEN" \
+  -H "Content-Type: application/json" \
+  "$FORGEJO_URL/api/v1/repos/$FORGEJO_ORG/<repo>/milestones" \
+  -d '{
+    "title": "M01 — Core pipeline",
+    "description": "Goal: ... · Shippable when: ..."
+  }' | jq '{id, title}'
 ```
 
-Se a milestone (título "M01 — <nome>") não existe:
+Guarde os IDs das milestones em `.gsd/STACK.md` (seção "Notas") — necessários para criar issues.
+
+### Passo 2 — Labels
+
+Listar labels existentes:
 
 ```bash
-gh api repos/<owner>/<repo>/milestones \
-  -f title="M01 — Core pipeline" \
-  -f description="Goal: ... · Shippable when: ..." \
-  -f state="open"
+curl -s -H "Authorization: token $FORGEJO_TOKEN" \
+  "$FORGEJO_URL/api/v1/repos/$FORGEJO_ORG/<repo>/labels" | jq '[.[] | {id, name}]'
+```
+
+Criar label se não existir:
+
+```bash
+curl -s -X POST \
+  -H "Authorization: token $FORGEJO_TOKEN" \
+  -H "Content-Type: application/json" \
+  "$FORGEJO_URL/api/v1/repos/$FORGEJO_ORG/<repo>/labels" \
+  -d '{"name": "feat", "color": "#0075ca"}' | jq '{id, name}'
 ```
 
 ### Passo 3 — Issues por task
 
 Para cada task do ROADMAP (`M01-S02-T01: ...`):
 
-1. Buscar pelo marcador:
+1. Buscar pelo marcador (evita duplicata):
 
-   ```bash
-   gh issue list --search "Task: M01-S02-T01 in:body" --state all --json number,title
-   ```
+```bash
+curl -s -H "Authorization: token $FORGEJO_TOKEN" \
+  "$FORGEJO_URL/api/v1/repos/$FORGEJO_ORG/<repo>/issues?type=issues&state=open&limit=50&page=1" \
+  | jq '[.[] | select(.body | contains("Task: M01-S02-T01")) | {number, title}]'
+# Repetir com state=closed para issues fechadas
+```
 
-2. Se já existe, **pular**.
+2. Se já existe → **pular**.
 
-3. Se não existe, criar:
+3. Se não existe, criar (substituir `<milestone-id>` e `<label-id>` pelos IDs capturados):
 
-   ```bash
-   gh issue create \
-     --title "<type>(<scope>): T01 - <descrição>" \
-     --body "Task: M01-S02-T01
+```bash
+curl -s -X POST \
+  -H "Authorization: token $FORGEJO_TOKEN" \
+  -H "Content-Type: application/json" \
+  "$FORGEJO_URL/api/v1/repos/$FORGEJO_ORG/<repo>/issues" \
+  -d '{
+    "title": "feat(scope): T01 - descrição",
+    "body": "Task: M01-S02-T01\n\n## Descrição\n...",
+    "milestone": <milestone-id>,
+    "labels": [<label-id>]
+  }' | jq '{number, title, html_url}'
+```
 
-   <body do template — ver workflow-issues>" \
-     --milestone "M01 — Core pipeline" \
-     --label "<type>"
-   ```
-
-4. Adicionar ao Project no status `Backlog`:
-
-   ```bash
-   gh project item-add <project-number> --owner <owner> --url <issue-url>
-   ```
-
-   E setar `Status=Backlog`, `Type=<type>` via `gh project item-edit`.
+4. Adicionar ao Project via web UI: acesse a issue e use o painel lateral "Projects".
 
 ## Mover issue entre colunas
 
-```bash
-gh project item-edit \
-  --project-id <project-node-id> \
-  --id <item-id> \
-  --field-id <status-field-id> \
-  --single-select-option-id <option-id-da-coluna-destino>
-```
+No Forgejo, o project board é gerenciado pela web UI:
+**`https://git.kcl.net.br/<owner>/<repo>/projects`**
 
-Capture os IDs estáveis no bootstrap e guarde em `.gsd/STACK.md` (seção "Notas") para reutilizar.
+Arraste a issue para a coluna correta.
 
 ## Regras
 
 - Project precisa existir **antes** de qualquer trabalho de issue/branch.
-- Direção da sincronia é **só** ROADMAP → GitHub. Nunca apague/feche issues para refletir mudanças no ROADMAP.
+- Direção da sincronia é **só** ROADMAP → Forgejo. Nunca apague/feche issues para refletir mudanças no ROADMAP.
 - Issues novas criadas pela sincronia entram em `Backlog`, sem priority, sem branch. Milestone correspondente já linkada.
 - Issue com marcador `Task: <MID>-<SID>-<TID>` não deve ser duplicada — a sincronia procura o marcador antes de criar.
 
 ## Resumo ao dev após sincronia
 
 ```
-Sincronia ROADMAP → GitHub:
+Sincronia ROADMAP → Forgejo:
 - Project: <criado | já existia> (<url>)
 - Milestones criadas: M01, M02
 - Milestones puladas (já existiam): M03
@@ -138,7 +147,7 @@ Sincronia ROADMAP → GitHub:
 - Tasks no ROADMAP sem issue após sincronia: 0
 ```
 
-Se algum passo falhou (token sem scope `project`, milestone com nome divergente, gh CLI faltando), pare e mostre o erro — não tente workarounds destrutivos.
+Se algum passo falhou (token sem scope, milestone com nome divergente, curl falhando), pare e mostre o erro — não tente workarounds destrutivos.
 
 ## Skills relacionadas
 

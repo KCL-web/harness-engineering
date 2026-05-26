@@ -23,7 +23,7 @@ O **harness v2** é um conjunto de **skills**, **MCPs** e tooling que fazem toda
 
 ```bash
 # Linux / macOS / WSL
-git clone https://github.com/MatheusSlvRibeiro/harness-engineering ~/harness-engineering
+git clone https://git.kcl.net.br/kcl-web/harness-engineering ~/harness-engineering
 cd ~/harness-engineering
 ./scripts/setup.sh        # ~3-5 min: instala junction, RTK, MCPs
 ./scripts/doctor.sh       # confirma tudo verde
@@ -31,7 +31,7 @@ cd ~/harness-engineering
 
 ```powershell
 # Windows nativo (PowerShell)
-git clone https://github.com/MatheusSlvRibeiro/harness-engineering "$HOME\harness-engineering"
+git clone https://git.kcl.net.br/kcl-web/harness-engineering "$HOME\harness-engineering"
 .\scripts\setup.ps1
 .\scripts\doctor.ps1
 ```

@@ -22,7 +22,7 @@ Antes de tocar no projeto, garanta o setup global no laptop:
 
 ```bash
 # Clone (ou pull) do harness
-git clone https://github.com/<owner>/harness-engineering ~/harness-engineering
+git clone https://git.kcl.net.br/kcl-web/harness-engineering ~/harness-engineering
 cd ~/harness-engineering
 ./scripts/setup.sh        # cria symlink ~/.claude/skills/harness, instala RTK + MCPs
 ./scripts/doctor.sh       # confirma tudo verde

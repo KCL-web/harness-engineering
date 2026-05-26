@@ -73,7 +73,7 @@ Valores atuais de métricas de qualidade que **só podem melhorar** (quality rat
 Roda:
 
 - Local: `bash scripts/check-harness.sh`
-- CI: `.github/workflows/harness-gate.yml` em todo PR para `main` ou `develop`
+- CI: `.forgejo/workflows/harness-gate.yml` em todo PR para `main` ou `develop`
 
 ## Fluxo
 
