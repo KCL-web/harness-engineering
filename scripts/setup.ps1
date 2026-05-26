@@ -28,6 +28,8 @@ $claudeSkillsDir = Join-Path $claudeDir 'skills'
 $skillsTarget = Join-Path $claudeSkillsDir 'harness'
 $capturedTarget = Join-Path $claudeSkillsDir 'captured'
 $repoSkills = Join-Path $repoRoot 'skills'
+$repoCommands = Join-Path $repoRoot 'commands'
+$claudeCommandsDir = Join-Path $claudeDir 'commands'
 $openspaceWorkspace = Join-Path $env:USERPROFILE '.openspace-workspace'
 
 Write-Host '=== Harness Engineering Setup ===' -ForegroundColor Cyan
@@ -73,6 +75,23 @@ if (-not (Test-Path $skillsTarget)) {
     }
 }
 Write-Host "  $skillsTarget -> $repoSkills" -ForegroundColor Green
+
+# Slash commands do harness → ~/.claude/commands/<name>.md (symlink por arquivo)
+if (-not (Test-Path $claudeCommandsDir)) { New-Item -ItemType Directory -Path $claudeCommandsDir | Out-Null }
+Get-ChildItem -Path $repoCommands -Filter '*.md' -ErrorAction SilentlyContinue | ForEach-Object {
+    $cmdTarget = Join-Path $claudeCommandsDir $_.Name
+    if (Test-Path $cmdTarget) {
+        if ($Force) {
+            Write-Host "  -Force: removendo comando existente: $($_.Name)" -ForegroundColor Yellow
+            Remove-Item $cmdTarget -Force
+        } else {
+            Write-Host "  Comando ja existe: $($_.Name). Use -Force para recriar." -ForegroundColor Yellow
+            return
+        }
+    }
+    cmd /c mklink "$cmdTarget" $_.FullName | Out-Null
+    Write-Host "  $cmdTarget -> $($_.FullName)" -ForegroundColor Green
+}
 
 # Diretorio para skills CAPTURED pelo OpenSpace (untracked, local da maquina).
 if (-not (Test-Path $capturedTarget)) {

@@ -13,6 +13,8 @@ CLAUDE_SKILLS_DIR="$CLAUDE_DIR/skills"
 SKILLS_TARGET="$CLAUDE_SKILLS_DIR/harness"
 CAPTURED_TARGET="$CLAUDE_SKILLS_DIR/captured"
 REPO_SKILLS="$REPO_ROOT/skills"
+REPO_COMMANDS="$REPO_ROOT/commands"
+CLAUDE_COMMANDS_DIR="$CLAUDE_DIR/commands"
 SKIP_MCP="${SKIP_MCP:-0}"
 FORCE="${FORCE:-0}"
 
@@ -130,6 +132,25 @@ if [[ ! -L "$SKILLS_TARGET" ]]; then
     ln -s "$REPO_SKILLS" "$SKILLS_TARGET"
 fi
 echo "  $SKILLS_TARGET -> $REPO_SKILLS"
+
+# Slash commands do harness → ~/.claude/commands/<name>.md (symlink por arquivo)
+mkdir -p "$CLAUDE_COMMANDS_DIR"
+for cmd_file in "$REPO_COMMANDS"/*.md; do
+    [[ -f "$cmd_file" ]] || continue
+    cmd_name="$(basename "$cmd_file")"
+    cmd_target="$CLAUDE_COMMANDS_DIR/$cmd_name"
+    if [[ -L "$cmd_target" || -e "$cmd_target" ]]; then
+        if [[ "$FORCE" == "1" ]]; then
+            echo "  FORCE=1: removendo comando existente: $cmd_name"
+            rm -f "$cmd_target"
+        else
+            echo "  Comando já existe: $cmd_name. Use FORCE=1 para recriar."
+            continue
+        fi
+    fi
+    ln -s "$cmd_file" "$cmd_target"
+    echo "  $cmd_target -> $cmd_file"
+done
 
 # Diretório para skills CAPTURED pelo OpenSpace (untracked, local da máquina).
 # Mantido separado do curated para não poluir o repo.
