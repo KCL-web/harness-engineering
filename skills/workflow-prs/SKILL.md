@@ -50,25 +50,41 @@ Closes #<outro-numero-se-houver>
 - Nunca force push (`push --force`) em `main` ou `develop`. Em branches `feat/*` próprias, só se o dev pedir.
 - Nunca skip hooks (`--no-verify`) a menos que o dev peça explicitamente.
 
-## Comando
+## Abrir PR
+
+**Via web UI** (recomendado):
+```
+https://git.kcl.net.br/<owner>/<repo>/compare/develop...<sua-branch>
+```
+
+**Via API** (para automação):
 
 ```bash
-gh pr create --title "feat(scope): description" --body "$(cat <<'EOF'
-## Summary
-- ...
-
-## Test plan
-- [ ] ...
-
-Closes #N
-EOF
-)" --base develop
+curl -s -X POST \
+  -H "Authorization: token $FORGEJO_TOKEN" \
+  -H "Content-Type: application/json" \
+  "https://git.kcl.net.br/api/v1/repos/$FORGEJO_ORG/<repo>/pulls" \
+  -d "{
+    \"title\": \"feat(scope): description\",
+    \"body\": \"## Summary\n- ...\n\n## Test plan\n- [ ] ...\n\nCloses #N\",
+    \"head\": \"feat/minha-branch\",
+    \"base\": \"develop\"
+  }" | jq '{number, title, html_url}'
 ```
 
 Para PR `develop → main`:
 
 ```bash
-gh pr create --title "release: <data ou versão>" --body "..." --base main --head develop
+curl -s -X POST \
+  -H "Authorization: token $FORGEJO_TOKEN" \
+  -H "Content-Type: application/json" \
+  "https://git.kcl.net.br/api/v1/repos/$FORGEJO_ORG/<repo>/pulls" \
+  -d "{
+    \"title\": \"release: <data ou versão>\",
+    \"body\": \"...\",
+    \"head\": \"develop\",
+    \"base\": \"main\"
+  }" | jq '{number, title, html_url}'
 ```
 
 ## Ao receber feedback no PR

@@ -61,7 +61,7 @@ issue priorizada (Ready → Priority)
    ↓
 branch criada a partir de develop
    ↓
-issue movida para In Progress (gh project item-edit)
+issue movida para In Progress (Forgejo Project board)
    ↓
 trabalho local → comando de validação do projeto passa
    ↓

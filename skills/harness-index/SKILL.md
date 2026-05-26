@@ -24,7 +24,7 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 - Sem `any`/escape hatches no type system. Sem código comentado em commits. Sem debug prints.
 - Conteúdo de documentação em **português-BR**. Identificadores técnicos (tipo de commit, slug de branch, label de issue) em **inglês**.
 - No fim de cada sessão, **mostre ao dev** o conteúdo atualizado de `.gsd/progress/<MID>-<SID>.md` para ele colar manualmente. Você **não** escreve sozinho em `.gsd/` fora do bootstrap inicial.
-- Antes de qualquer trabalho com issue/branch/PR, verifique se o GitHub Project existe — se não, invoque `workflow-project-board` para criar.
+- Antes de qualquer trabalho com issue/branch/PR, verifique se o Forgejo Project existe — se não, invoque `workflow-project-board` para criar.
 - No início de toda sessão, execute o ritual de abertura (`session-rituals` → wake-up + search direcionado). Antes de propor decisão arquitetural, search antes — se há decisão prévia, exponha-a literalmente.
 - No fim de toda sessão (sinalizado pelo dev), execute o ritual de fechamento (recap de decisões → drawers explícitos → progress log).
 
@@ -36,7 +36,7 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | Abrir issue, template, ciclo Backlog→Done | `workflow-issues` |
 | Abrir PR, `Closes #N`, validação | `workflow-prs` |
 | Mensagem de commit (Conventional Commits) | `workflow-commits` |
-| GitHub Project (6 colunas, criar via gh, sincronia ROADMAP) | `workflow-project-board` |
+| Forgejo Project (6 colunas, criar via UI, sincronia ROADMAP) | `workflow-project-board` |
 | Adicionar feature, atualizar baseline, ratchet | `ratchet-feature-list` |
 | Código frontend (React, Vite, SCSS, RHF, zod, BEM, aliases) | `stack-react-vite-scss` |
 | Código backend (Django, DRF, JWT) | `stack-django-drf-jwt` |
