@@ -37,7 +37,7 @@ echo ""
 
 # Configura credential helper para salvar token Forgejo (HTTPS)
 if [[ -n "$FORGEJO_TOKEN" ]]; then
-  git config --global credential."$FORGEJO_URL".helper store
+  git config --global credential.helper store
 
   CRED_FILE="$HOME/.git-credentials"
   FORGEJO_HOST=$(echo "$FORGEJO_URL" | sed 's|https://||')
