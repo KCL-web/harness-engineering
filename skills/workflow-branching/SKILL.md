@@ -20,7 +20,7 @@ docs/*      → só documentação
 
 ## Regras inegociáveis
 
-- `main` e `develop` são **protegidas**. Nunca push direto.
+- `main` é **protegida**. Nunca push direto.
 - Sempre criar branch a partir de `develop`, **nunca** de `main`.
 - Naming: kebab-case curto descrevendo o trabalho, não número da issue.
 - O tipo da branch precisa bater com o tipo dominante da issue (feat/fix/chore/etc).
