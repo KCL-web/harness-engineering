@@ -10,7 +10,7 @@ Este arquivo é carregado quando uma sessão do agente começa na **raiz do work
 
 Este workspace contém **múltiplos repositórios Git independentes** que servem ao mesmo produto. Cada repo:
 
-- Tem seu próprio remote, branches, GitHub Project, comando de validação, deploy.
+- Tem seu próprio remote (Forgejo; GitHub é só espelho de backup), branches, milestones/issues, comando de validação, deploy.
 - Tem `AGENTS.md` slim + `.gsd/STACK.md` + `.gsd/SPEC.md` + `.gsd/ROADMAP.md`. As convenções de código vêm da skill `stack-<archetype>` apontada no STACK.md — não há mais `CONVENTIONS.md` por sub-repo na v2.
 - É operado **independentemente** no dia a dia.
 
@@ -74,21 +74,16 @@ Modo single-repo é o padrão — use sempre que puder. Modo umbrella custa mais
 
 ---
 
-## GitHub Project board (multi-repo)
+## Coordenação cross-repo no Forgejo (sem board)
 
-Use um **único GitHub Project (Projects v2)** linkado a **todos** os repos deste workspace.
+O Forgejo deste workspace **não usa project board**. Não existe board compartilhado — cada repo tem suas próprias milestones, labels e issues. A coordenação cross-repo é por **convenção**, não por um quadro central:
 
-- Um board, um conjunto de colunas, uma lista de priorização — mesmo que os commits vivam em repos separados.
-- Issues de qualquer repo aparecem no mesmo board.
-- As colunas e o ciclo de vida definidos no `AGENTS.md` de cada repo se aplicam identicamente.
+- **Issue âncora + filhas** (ver "Coordenação de issues" acima) conectam o trabalho entre repos via `Refs <owner>/<repo-âncora>#N`.
+- **Mesmo slug de branch** em todos os repos da mesma feature deixa óbvio o que pertence junto.
+- **Mesma nomenclatura de milestone/sprint** (`M01 — <nome>`, label `sprint/M01-S0X`) em cada repo afetado, para que filtrar por milestone/sprint dê a visão cross-repo daquele marco.
+- **Priorização** é o label `priority` em cada repo (ver `workflow-issues`) — não há lista central priorizada.
 
-Verifique no início da sessão:
-
-```bash
-gh project list --owner <owner>
-```
-
-Se existirem vários boards (um por repo), consolide em um só antes de qualquer trabalho novo.
+GitHub é só espelho de backup — nunca opere issues/milestones nele.
 
 ---
 

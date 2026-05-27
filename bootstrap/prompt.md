@@ -7,7 +7,7 @@ Pré-requisito: as skills do harness já estão carregadas (junction `~/.claude/
 ## Regras desta sessão
 
 - Você TEM permissão de Write/Edit nos arquivos `.gsd/*.md` (exceção autorizada ao "não escrevo sozinho").
-- Você TEM permissão de chamar `gh` no PASSO FINAL (sincronia ROADMAP → GitHub). Para o procedimento, siga `workflow-project-board` e `workflow-issues`.
+- Você TEM permissão de chamar `curl` contra a API do Forgejo no PASSO FINAL (sincronia ROADMAP → Forgejo). Para o procedimento, siga `workflow-issues`. (GitHub é só espelho de backup — nunca opere nele.)
 - Você NÃO TEM permissão de `git commit`/`git push`, nem de mexer em `AGENTS.md`/`scripts/`/`.harness/` fora dos arquivos `.harness/feature_list.json` e `.harness/baseline.json` (que você inicializa a partir de `templates/`).
 - Em projeto existente, analise o código ANTES de perguntar — pré-preencha o que conseguir inferir.
 - Para o que não conseguir inferir, escreva com marcadores explícitos:
@@ -79,21 +79,20 @@ Liste os TBDs remanescentes (`grep -n "TBD:" .gsd/*.md`). Pergunte se quer respo
 
 ## Sincronia final — single-repo
 
-Depois que `.gsd/ROADMAP.md` está confirmado, crie no GitHub:
+Depois que `.gsd/ROADMAP.md` está confirmado, crie no Forgejo (sem project board — só milestones, labels e issues; ver `workflow-issues`):
 
-1. **GitHub Project** — siga `workflow-project-board` (6 colunas, 3 campos).
-2. **Milestones** — uma por marco do ROADMAP.
-3. **Issues** — uma por task, no Backlog, linkada à milestone, com marcador `Task: <MID>-<SID>-<TID>` na primeira linha do body (para sincronias futuras não duplicarem).
+1. **Milestones** — uma por marco do ROADMAP (`M01 — <nome>`).
+2. **Labels** — tipo (`feat`, `fix`, …), sprint (`sprint/M0X-S0X`) e `priority`.
+3. **Issues** — uma por task, linkada à milestone, com label de sprint e marcador `Task: <MID>-<SID>-<TID>` na primeira linha do body (para sincronias futuras não duplicarem). Sem `priority` por padrão (= backlog).
 
-Pré-checagem: `gh auth status` e `gh project list` devem responder. Se faltar scope: `gh auth refresh -s project,read:project`.
+Pré-checagem: `$FORGEJO_TOKEN` setado e um `curl` ao endpoint de milestones responde (ver `workflow-issues` → "Verificação no início da sessão").
 
-Antes de criar QUALQUER coisa, mostre o resumo (N milestones, M issues) e espere "ok" explícito. Depois rode tudo e mostre o resultado (Project URL, milestones criadas, issues criadas com números).
+Antes de criar QUALQUER coisa, mostre o resumo (N milestones, M issues) e espere "ok" explícito. Depois rode tudo e mostre o resultado (milestones criadas, labels criados, issues criadas com números).
 
 ## Skills úteis durante o bootstrap
 
 - `harness-index` — quando ficar em dúvida de qual skill consultar
-- `workflow-project-board` — criar/configurar o GitHub Project
-- `workflow-issues` — template de issue, marcador Task
+- `workflow-issues` — template de issue, milestones, sprints (labels), marcador Task, sincronia ROADMAP → Forgejo
 - `ratchet-feature-list` — schema e regras de `.harness/*.json`
 - `memory-palace` — pra propor uma drawer registrando decisões fundadoras desta sessão (problema, vision, escolhas de stack)
 
@@ -130,4 +129,4 @@ Então rode a entrevista single-repo com ajustes:
 
 ### Sincronia final em umbrella
 
-Em modo umbrella **NÃO crie issues por task** — cada sub-repo cuida do seu próprio ROADMAP. No nível umbrella, só crie o Project compartilhado (se for ter um único board cross-repo) e nada mais.
+Em modo umbrella **NÃO crie issues por task** — cada sub-repo cuida do seu próprio ROADMAP, milestones e labels. No nível umbrella não há nada a sincronizar no Forgejo (sem board); a coordenação cross-repo é por convenção de naming (ver `umbrella/AGENTS.md`).

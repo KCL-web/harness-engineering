@@ -31,10 +31,9 @@ harness-engineering/                       (este repo)
 ├── skills/                                ← junction → ~/.claude/skills/harness/
 │   ├── harness-index/                     ← AGENTS.md condensado
 │   ├── workflow-branching/                ← develop/main, naming
-│   ├── workflow-issues/                   ← template, ciclo no project
+│   ├── workflow-issues/                   ← template, milestones, sprints, sincronia ROADMAP → Forgejo
 │   ├── workflow-prs/                      ← Closes #N, validação
 │   ├── workflow-commits/                  ← Conventional Commits
-│   ├── workflow-project-board/            ← 6 colunas, automação gh
 │   ├── ratchet-feature-list/              ← .harness/ contract
 │   ├── stack-react-vite-scss/             ← archetype frontend
 │   ├── stack-django-drf-jwt/              ← archetype backend (esqueleto)
@@ -91,7 +90,7 @@ cd harness-engineering
 
 O setup:
 
-1. Valida `git`, `gh`, `python 3.9+`, `uv`, `node`.
+1. Valida `git`, `curl`, `python 3.9+`, `uv`, `node`.
 2. Cria junction (Windows) / symlink (Unix) `~/.claude/skills/harness` → `<repo>/skills`, e o diretório `~/.claude/skills/captured/` para skills evolved.
 3. Instala **RTK** (Rust Token Killer) — CLI proxy que filtra/comprime saída de comandos antes de chegar ao contexto do LLM, reduzindo 60–90% dos tokens em operações comuns (`git status`, `ls`, `pytest`, etc.).
 4. Instala MCPs (`uv tool install mempalace` + `uv tool install git+https://github.com/HKUDS/OpenSpace.git`) e escreve `~/.claude/mcp.json` com ambos. OpenSpace é apontado para `~/.claude/skills/captured/` via `OPENSPACE_HOST_SKILL_DIRS`. Baixa também os **hooks de auto-save** do MemPalace (`Stop` + `PreCompact`) para `~/.claude/hooks/mempalace/` e os wira em `~/.claude/settings.json` — sessões passam a indexar transcripts automaticamente, sem precisar lembrar de salvar manualmente.
