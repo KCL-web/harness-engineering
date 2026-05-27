@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Este projeto usa **Claude Code Skills** como mecanismo principal de contexto. As regras de workflow, branching, PRs, commits, project board, feature list e ratchet vivem em skills sob `~/.claude/skills/harness/` (symlink/junction para `skills/` deste repo).
+Este projeto usa **Claude Code Skills** como mecanismo principal de contexto. As regras de workflow, branching, PRs, commits, issues/milestones, feature list e ratchet vivem em skills sob `~/.claude/skills/harness/` (symlink/junction para `skills/` deste repo).
 
 **Ponto de entrada:** invoque `harness-index` no início da sessão — ele tem a tabela "para fazer X, leia skill Y".
 
@@ -15,7 +15,7 @@ As skills cobrem o operacional. O que sobra aqui são contratos que toda sessão
    - O bootstrap inicial (ver `bootstrap/prompt.md`), que tem permissão de Write/Edit em `.gsd/` e `.harness/`.
    - Comandos que o dev pediu explicitamente para executar.
 3. **Validação do projeto passa antes de cada commit.** O comando único de validação está em `.gsd/STACK.md`. Tarefa sem validação verde não é tarefa pronta.
-4. **Nunca pushe direto** para `main` ou `develop`. Tudo via PR de `feat/*` → `develop` → `main`. Detalhes em `workflow-branching` e `workflow-prs`.
+4. **`main` é protegida** — nunca pushe direto; produção só entra via PR `develop → main` aprovado pelo senior. `develop` é a branch de integração compartilhada: os devs mergeiam suas `feat/*`/`fix/*` ali livremente (sem aprovação obrigatória). Fluxo: `feat/*` → `develop` → `main`. Detalhes em `workflow-branching` e `workflow-prs`.
 5. **Search antes de decidir.** Antes de propor decisão arquitetural relevante, consulte memória (`memory-palace` → `mempalace_search`). Se há decisão prévia, exponha-a.
 
 ---

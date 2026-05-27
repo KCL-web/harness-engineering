@@ -52,7 +52,7 @@ cp .env.example .env     # preencha as variáveis necessárias
 <comando de dev>
 ```
 
-Depois de instalar as dependências, o agente deve verificar se existe um GitHub Project para o repositório (ver **Bootstrap do GitHub Project** no `AGENTS.md`). Se não existir, o agente cria antes de qualquer outro trabalho.
+Depois de instalar as dependências, o agente deve verificar se as milestones do ROADMAP existem no Forgejo (ver skill `workflow-issues`). Se faltar, roda a sincronia ROADMAP → Forgejo antes de qualquer outro trabalho. (Sem project board — só milestones, labels e issues.)
 
 ---
 

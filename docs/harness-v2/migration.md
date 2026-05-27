@@ -49,7 +49,7 @@ cd ~/harness-engineering
 | `.harness/baseline.json` | **mantido** — schema preservado |
 | `scripts/check-harness.sh` | **mantido** — continua validando os JSONs |
 
-> `scripts/harness-init.sh` e `scripts/harness-sync.sh` (v1) deixam de ser usados — bootstrap roda via prompt no harness, sincronia ROADMAP→GitHub é orientada por `workflow-project-board` + `workflow-issues`. Você pode apagar do projeto ou deixar parados — eles não atrapalham.
+> `scripts/harness-init.sh` e `scripts/harness-sync.sh` (v1) deixam de ser usados — bootstrap roda via prompt no harness, sincronia ROADMAP→Forgejo (milestones, labels, issues) é orientada por `workflow-issues`. Você pode apagar do projeto ou deixar parados — eles não atrapalham.
 
 ---
 
@@ -159,7 +159,7 @@ Quando voltar, na primeira mensagem da nova sessão, valide:
 
 Peça ao Claude (na nova sessão):
 
-> "Vamos validar a migração. Invoque `harness-index` e me diga em uma frase qual skill cobre cada um destes tópicos: branching, PRs, project board, feature list, convenções de código do nosso stack, memória cross-projeto, e skills evolutivas."
+> "Vamos validar a migração. Invoque `harness-index` e me diga em uma frase qual skill cobre cada um destes tópicos: branching, PRs, issues/milestones/sprints, feature list, convenções de código do nosso stack, memória cross-projeto, e skills evolutivas."
 
 Se o Claude consegue responder cada tópico apontando para a skill correta, a migração funcionou.
 
@@ -171,8 +171,8 @@ Rode também o comando de validação do projeto (`.gsd/STACK.md` → seção "V
 git add AGENTS.md .gsd/
 git commit -m "chore: migrate to harness-v2 (skills + MCPs)"
 git push -u origin chore/harness-v2-migration
-gh pr create --base develop --title "chore: migrate to harness-v2" \
-  --body "Migração v1 → v2 conforme ~/harness-engineering/docs/harness-v2/migration.md."
+# Abra a PR no Forgejo (base develop) — web UI ou curl, ver skill workflow-prs:
+#   https://git.kcl.net.br/<owner>/<repo>/compare/develop...chore/harness-v2-migration
 ```
 
 PR é `chore`, vai para `develop` como qualquer outro. Como não toca código de feature, baseline e feature_list não regridem — gate do harness passa.
@@ -185,7 +185,7 @@ PR é `chore`, vai para `develop` como qualquer outro. Como não toca código de
 
 Stack inusual (Rust + Axum, Go + Echo, Elixir + Phoenix, etc.). Faça **tudo** menos identificar archetype — em STACK.md, ponha "Archetype skill correspondente: nenhum ainda — convenções emergem via OpenSpace (skill evolving-skills)".
 
-O harness continua funcionando: workflow/PR/commits/issues/project-board/ratchet são agnósticos de stack. As convenções de código emergem via OpenSpace conforme você usa o projeto.
+O harness continua funcionando: workflow/PR/commits/issues/milestones/ratchet são agnósticos de stack. As convenções de código emergem via OpenSpace conforme você usa o projeto.
 
 ### Múltiplos archetypes no mesmo repo
 

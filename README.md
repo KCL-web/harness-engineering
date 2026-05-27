@@ -1,6 +1,6 @@
 # Harness Engineering
 
-Um scaffolding reutilizável de **skills, MCPs, prompts e tooling** que permite a um agente de IA (Claude Code ou similar) operar qualquer projeto com a mesma disciplina de workflow: branches, commits, issues, project board, validação, tracking de progresso, memória cross-projeto e skills auto-evolutivas.
+Um scaffolding reutilizável de **skills, MCPs, prompts e tooling** que permite a um agente de IA (Claude Code ou similar) operar qualquer projeto com a mesma disciplina de workflow: branches, commits, issues, milestones, validação, tracking de progresso, memória cross-projeto e skills auto-evolutivas.
 
 Isto não é um gerador de código. É um **harness** — o contexto que o agente carrega antes de escrever qualquer código, para que o trabalho produzido seja consistente e revisável.
 
@@ -12,7 +12,7 @@ Isto não é um gerador de código. É um **harness** — o contexto que o agent
 
 Sem um harness, toda sessão de IA começa do zero: o agente inventa convenções, o dev corrige, e o projeto deriva. Com o harness:
 
-- Regras universais (Conventional Commits, branching, GitHub Project board, ratchet de qualidade) são escritas uma vez como **skills** e compartilhadas entre todos os projetos.
+- Regras universais (Conventional Commits, branching, issues/milestones no Forgejo, ratchet de qualidade) são escritas uma vez como **skills** e compartilhadas entre todos os projetos.
 - Decisões arquiteturais notáveis viram **drawers** no MemPalace (memória *verbatim* cross-projeto) e são recuperadas semanticamente em sessões futuras.
 - Convenções de stack (folder layout, componentes, testes) vivem em skills `stack-*` e podem evoluir automaticamente via OpenSpace conforme o uso.
 - Comandos de shell viram 60–90% mais baratos em tokens via RTK (CLI proxy transparente).
@@ -37,7 +37,7 @@ Documento de referência completo: [`docs/harness-v2/overview.md`](docs/harness-
 
 | Ferramenta | Por quê |
 | --- | --- |
-| `git` ≥ 2.30, `gh` (GitHub CLI) | base de tudo |
+| `git` ≥ 2.30 | base de tudo (operações de issue/milestone no Forgejo são via `curl` + `FORGEJO_TOKEN`, ver `workflow-issues`) |
 | `python` ≥ 3.9, [`uv`](https://docs.astral.sh/uv/) | instalar MCPs (MemPalace, OpenSpace) em envs isolados |
 | `node` ≥ 18 | Claude Code CLI |
 | `bash` ≥ 4 (Linux/macOS) ou PowerShell 5.1 (Windows) | scripts de setup/doctor |
@@ -104,7 +104,7 @@ A entrevista de bootstrap:
   templates/feature_list.json   → .harness/feature_list.json
   templates/baseline.json       → .harness/baseline.json
   ```
-- No fim, opcionalmente sincroniza ROADMAP → Forgejo (Project, milestones, issues).
+- No fim, opcionalmente sincroniza ROADMAP → Forgejo (milestones, labels, issues — sem project board).
 
 > Note que **não existe mais `.gsd/CONVENTIONS.md`** na v2 — convenções de código vêm da skill `stack-<archetype>` que combina com a stack (`stack-react-vite-scss`, `stack-django-drf-jwt`, etc.). A entrevista identifica o archetype e registra em `STACK.md`.
 
@@ -126,7 +126,7 @@ harness-engineering/
 ├── CLAUDE.md                 # @AGENTS.md
 ├── skills/                   # skills carregadas via junction
 │   ├── harness-index/        # tabela "para fazer X, leia skill Y"
-│   ├── workflow-*/           # branching, commits, issues, prs, project-board
+│   ├── workflow-*/           # branching, commits, issues (+ milestones/sprints), prs
 │   ├── ratchet-feature-list/ # contrato dev↔QA
 │   ├── stack-*/              # archetypes (react-vite-scss, django-drf-jwt)
 │   ├── memory-palace/        # wings/rooms/drawers do MemPalace
@@ -166,9 +166,8 @@ Skills cobrem o detalhe. Resumo:
 | --- | --- |
 | Branching (`feat/*` → `develop` → `main`) | `workflow-branching` |
 | Commits (Conventional Commits, inglês, ≤72 chars) | `workflow-commits` |
-| Issues (template, marcador `Task: <MID>-<SID>-<TID>`) | `workflow-issues` |
+| Issues, milestones, sprints (template, marcador `Task:`, sincronia ROADMAP → Forgejo, sem board) | `workflow-issues` |
 | PRs (`Closes #N`, validação verde, base = `develop`) | `workflow-prs` |
-| Project board (6 colunas: Backlog→Done) | `workflow-project-board` |
 | Feature list e baseline (ratchet de qualidade) | `ratchet-feature-list` |
 | Memória cross-projeto (decisões, postmortems) | `memory-palace` |
 | Skills auto-evolutivas (curated × evolved, promoção) | `evolving-skills` |

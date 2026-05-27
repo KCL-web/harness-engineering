@@ -66,7 +66,7 @@ Regras dos campos:
 
 - `id` — atribuído na criação, nunca reusado, nunca renomeado
 - `title`, `criteria` — **congelados** depois que a issue é aberta; se o requisito mudar de verdade, feche a feature e abra uma nova com novo ID
-- `linked_issues` — números das issues no GitHub que implementam ou verificam esta feature
+- `linked_issues` — números das issues no Forgejo que implementam ou verificam esta feature
 - `implemented` — virado para `true` pela sessão de dev quando o código está escrito e o comando de validação passa
 - `verified` — virado para `true` pela sessão de QA depois de rodar os critérios contra a app viva
 - `notes` — texto livre; útil para falhas de QA e caveats conhecidos

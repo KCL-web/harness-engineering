@@ -41,7 +41,7 @@ Write-Host ''
 Write-Host '[1/5] Validando dependencias...' -ForegroundColor Yellow
 $missing = New-Object System.Collections.Generic.List[string]
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) { $missing.Add('git') }
-if (-not (Get-Command gh  -ErrorAction SilentlyContinue)) { $missing.Add('gh (GitHub CLI)') }
+if (-not (Get-Command curl -ErrorAction SilentlyContinue)) { $missing.Add('curl') }
 if (-not $SkipMcp) {
     if (-not (Get-Command python -ErrorAction SilentlyContinue)) { $missing.Add('python 3.9+') }
     if (-not (Get-Command uv     -ErrorAction SilentlyContinue)) { $missing.Add('uv (Astral)') }
