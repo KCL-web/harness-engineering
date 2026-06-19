@@ -11,8 +11,9 @@ Pré-requisito: as skills do harness já estão carregadas (junction `~/.claude/
 ## Regras desta sessão
 
 - Você TEM permissão de Write/Edit nos arquivos `.gsd/*.md` (exceção autorizada ao "não escrevo sozinho").
-- Você TEM permissão de chamar `gh` no PASSO FINAL (sincronia ROADMAP → GitHub). Para o procedimento, siga `workflow-project-board` e `workflow-issues`.
-- Você NÃO TEM permissão de `git commit`/`git push`, nem de mexer em `AGENTS.md`/`scripts/`/`.harness/` fora dos arquivos `.harness/feature_list.json` e `.harness/baseline.json` (que você inicializa a partir de `templates/`).
+- Você TEM permissão de chamar `curl` contra a API do Forgejo no PASSO FINAL (sincronia ROADMAP → Forgejo). Para o procedimento, siga `workflow-issues`. (GitHub é só espelho de backup — nunca opere nele.)
+- Você TEM permissão de **criar** `CLAUDE.md` e `AGENTS.md` **somente se ainda não existirem** no projeto. Se já existirem, não toque neles. Criação acontece no Passo A, após os arquivos `.gsd/`.
+- Você NÃO TEM permissão de `git commit`/`git push`, nem de editar `AGENTS.md` já existente, nem de mexer em `scripts/`/`.harness/` fora dos arquivos `.harness/feature_list.json` e `.harness/baseline.json` (que você inicializa a partir de `templates/`).
 - Em projeto existente, analise o código ANTES de perguntar — pré-preencha o que conseguir inferir.
 - Para o que não conseguir inferir, escreva com marcadores explícitos:
   - `> [inferido]` antes de campos que você deduziu do código
@@ -60,6 +61,63 @@ templates/baseline.json       → .harness/baseline.json
 
 Em projeto EXISTENTE, preencha tudo o que conseguir inferir e marque com `> [inferido]`.
 Em projeto NOVO, deixe seções com `> [TBD: <pergunta curta>]`.
+
+**Se `CLAUDE.md` e/ou `AGENTS.md` não existirem no projeto**, crie-os agora:
+
+- `CLAUDE.md` → sempre `@AGENTS.md` (uma linha, sem mais nada).
+- `AGENTS.md` → use o template abaixo, adaptando a seção **Stack deste projeto** e a tabela de **subagentes** para a linguagem/framework detectados na FASE 0:
+
+```markdown
+# AGENTS.md — <nome-do-projeto>
+
+Este projeto usa **Claude Code Skills** como mecanismo principal de contexto.
+As regras de workflow, branching, PRs, commits, issues/milestones, feature list e ratchet
+vivem em skills sob `~/.claude/skills/harness/`.
+
+**Ponto de entrada:** invoque `harness-index` no início da sessão.
+
+---
+
+## Regras universais (fora de skill)
+
+1. **Idioma.** Conteúdo em **pt-BR**. Identificadores técnicos em **inglês**.
+2. **Não escreve sozinho fora do escopo permitido.** Atualização de progresso é mostrada ao dev para colar manual. Exceções: bootstrap inicial e comandos pedidos explicitamente.
+3. **Validação do projeto passa antes de cada commit.** Comando: `<comando de validação>`. Tarefa sem validação verde não é tarefa pronta.
+4. **`main` é protegida** — nunca pushe direto. Fluxo: `feat/*` → `develop` → `main`.
+5. **Search antes de decidir.** Antes de propor decisão arquitetural, consulte MemPalace. Wing: `<nome-do-projeto>`.
+
+---
+
+## Stack deste projeto
+
+<uma linha descrevendo linguagem + framework + banco + deploy>
+Detalhes completos em `.gsd/STACK.md`.
+
+---
+
+## Mecanismos do harness
+
+- **Skills** (`~/.claude/skills/`) — `harness-index` lista todas.
+- **MemPalace** (MCP) — memória cross-projeto. Wing: `<nome-do-projeto>`.
+- **OpenSpace** (MCP) — skills auto-evolutivas.
+- **RTK** (CLI, hook) — comprime saída de shell. Transparente.
+
+---
+
+## Delegação para subagentes especializados
+
+| Tipo de tarefa | Subagente |
+|---|---|
+| <adaptar à stack detectada> | <subagent-type> |
+
+**Quando NÃO delegar:** tarefas de uma linha, lookups, workflow (branch/commit/PR/issue).
+
+---
+
+## Documentação específica do projeto
+
+@.gsd/STACK.md
+```
 
 ### Passo B — Resumo ao dev
 
