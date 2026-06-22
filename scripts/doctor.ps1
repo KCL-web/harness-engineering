@@ -27,7 +27,7 @@ Write-Host '=== Harness Doctor ===' -ForegroundColor Cyan
 Write-Host ''
 Write-Host 'Dependências base:' -ForegroundColor Yellow
 Check-Cmd 'git'             'git'    'winget install --id Git.Git'             | Out-Null
-Check-Cmd 'gh (GitHub CLI)' 'gh'     'winget install --id GitHub.cli'          | Out-Null
+Check-Cmd 'curl'            'curl'   'já incluso no Windows 10+ (curl.exe)'    | Out-Null
 Check-Cmd 'python 3.9+'     'python' 'winget install --id Python.Python.3.12'  | Out-Null
 Check-Cmd 'uv (Astral)'     'uv'     'winget install --id astral-sh.uv'        | Out-Null
 Check-Cmd 'node'            'node'   'winget install --id OpenJS.NodeJS'       | Out-Null

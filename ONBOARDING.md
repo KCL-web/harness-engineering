@@ -8,7 +8,7 @@
 
 O **harness v2** é um conjunto de **skills**, **MCPs** e tooling que fazem toda sessão de Claude Code começar já sabendo:
 
-- **Workflow** — branches, commits, PRs, project board, ratchet de qualidade. Vive em skills `workflow-*` e `ratchet-feature-list`.
+- **Workflow** — branches, commits, PRs, issues/milestones/sprints, ratchet de qualidade. Vive em skills `workflow-*` e `ratchet-feature-list`.
 - **Convenções de stack** — folder layout, componentes, testes, schemas. Vive em skills `stack-<archetype>` (`stack-react-vite-scss`, `stack-django-drf-jwt`...).
 - **Memória cross-projeto** — decisões arquiteturais, postmortems, termos de domínio. Vive no MemPalace (MCP), com convenção em `memory-palace`.
 - **Evolução** — skills que melhoram com o uso real via OpenSpace (FIX/DERIVED/CAPTURED). Convenção em `evolving-skills`.
@@ -97,14 +97,16 @@ Se o STACK aponta um archetype skill (ex.: `stack-react-vite-scss`), é essa ski
 
 ## Fluxo dia-a-dia
 
+Sem project board: o status da issue é inferido dos sinais (branch existe = em progresso, PR aberta = em review, fechada = done). Priorização é o label `priority`.
+
 ```
-1. Pega uma issue do board → move pra "In Progress"
+1. Escolhe uma issue aberta (procure o label `priority`)
 2. git checkout develop && git pull
-3. git checkout -b <type>/<slug>   (ver skill workflow-branching)
+3. git checkout -b <type>/<slug>   (ver skill workflow-branching) → issue "em progresso" (tem branch)
 4. Trabalha; valida antes de cada commit
 5. git push -u origin <branch>
-6. gh pr create --base develop --title "<type>(...): ..."
-7. CI verde → review → merge → issue vira "Done"
+6. Abre a PR (base develop) — web UI ou curl, ver workflow-prs → issue "em review" (tem PR)
+7. CI verde → review → merge → issue fecha automaticamente (via Closes #N)
 ```
 
 ### Validação
@@ -138,7 +140,7 @@ Ruim: `fix stuff`, `Adicionado novo componente`, `WIP`
 | "Como faço X no fluxo de PR/branch/issue?" | skill `harness-index` → encontra a skill específica |
 | "Posso usar X biblioteca?" | skill `stack-<archetype>` apontada em `.gsd/STACK.md` |
 | "Como funciona o auth aqui?" | `.gsd/STACK.md` + `INTEGRATION.md` (se multi-repo) |
-| "Qual a próxima feature?" | `.gsd/ROADMAP.md` + GitHub Project board |
+| "Qual a próxima feature?" | `.gsd/ROADMAP.md` + milestones/issues no Forgejo (procure o label `priority`) |
 | "Já decidimos algo sobre Y antes?" | `mempalace search "<termo>"` — drawer no MemPalace |
 | "O Claude sugeriu algo estranho" | Confronte com a skill `stack-*` apontada em STACK.md; se contraria, peça justificativa antes de aceitar |
 
@@ -168,10 +170,10 @@ O OpenSpace eventualmente captura isso como FIX. Enquanto isso, salve um drawer 
 Significa que existe débito pré-existente. Pode corrigir em um `style:` commit no mesmo PR, OU abre uma issue separada e segue só com a tua mudança original (se a falha não bloquear).
 
 **"Quero adicionar uma feature que não está no roadmap."**
-Abre issue no board → entra no Backlog → planeja se precisa entrar num sprint próximo.
+Abre issue no Forgejo → fica no backlog (sem label `priority`) → planeja se entra num sprint próximo (milestone `M0X` + label `sprint/M0X-S0X`).
 
 **"Vou trabalhar offline / a internet caiu."**
-Skills, MemPalace e RTK são todos locais — funcionam offline. Só `gh` (issues/PRs) e atualização do MCP precisam de internet.
+Skills, MemPalace e RTK são todos locais — funcionam offline. Só o Forgejo (issues/PRs via API) e a atualização do MCP precisam de internet.
 
 **"Quero atualizar minhas skills do harness."**
 `cd ~/harness-engineering && git pull`. O symlink continua válido e as skills atualizadas ficam disponíveis na próxima sessão do Claude.
@@ -182,6 +184,6 @@ Skills, MemPalace e RTK são todos locais — funcionam offline. Só `gh` (issue
 
 1. Leia o `AGENTS.md` do projeto (42 linhas — termina em 2 minutos).
 2. Leia o `.gsd/STACK.md` e identifique qual skill `stack-*` cobre as convenções deste projeto.
-3. Pegue uma task pequena do board (procure "Ready" ou "Priority") e rode o fluxo completo uma vez antes de pegar algo grande. O primeiro PR é sempre o que mais ensina.
+3. Pegue uma task pequena (procure o label `priority` nas issues abertas) e rode o fluxo completo uma vez antes de pegar algo grande. O primeiro PR é sempre o que mais ensina.
 
 Para conceitos avançados (wings/rooms/drawers no MemPalace, promoção de skill CAPTURED para curated): leia `~/harness-engineering/docs/harness-v2/overview.md` quando tiver curiosidade. Não é pré-requisito.

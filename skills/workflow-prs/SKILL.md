@@ -1,13 +1,13 @@
 ---
 name: workflow-prs
-description: Como abrir PR no harness (título em Conventional Commits, body com Closes #N, validação obrigatória). Cobre PR feat/* → develop (obrigatório antes de In Review) e PR develop → main (produção). Invoque ao abrir PR, escrever título/body, ou diagnosticar PR rejeitado.
+description: Como abrir PR no Forgejo (título em Conventional Commits, body com Closes #N, validação obrigatória). Cobre PR feat/* → develop (a PR aberta é o sinal de "em review") e PR develop → main (produção). Invoque ao abrir PR, escrever título/body, ou diagnosticar PR rejeitado.
 ---
 
 # Workflow: PRs
 
 ## Quando abrir cada tipo de PR
 
-- **`feat/*` (ou `fix/*`, `chore/*`, etc.) → `develop`**: obrigatório antes de mover issue para In Review.
+- **`feat/*` (ou `fix/*`, `chore/*`, etc.) → `develop`**: abrir a PR é o que coloca a issue "em review" (não há coluna — a PR aberta é o sinal).
 - **`develop` → `main`**: obrigatório antes de deployar para produção. Aprovação do senior necessária.
 
 ## Título do PR
@@ -102,13 +102,13 @@ Nesse cenário, **não é necessário aguardar aprovação de senior** — o dev
 
 ## Ao receber feedback no PR
 
-- Mudanças requeridas → mover issue de volta para **In Progress**. Endereçar feedback, push, comentar com resumo do que mudou. Mover de volta para **In Review**.
-- Aprovado (feat/* → develop) → dev pode mergear diretamente. Issue vira **Done** automaticamente (pelo `Closes #N`).
-- Aprovado (develop → main) → senior faz o merge.
+- Mudanças requeridas → endereçar feedback na própria branch, push, comentar na PR com resumo do que mudou. A PR continua aberta (issue segue "em review").
+- Aprovado (feat/* → develop) → dev pode mergear diretamente. A issue **fecha** automaticamente (pelo `Closes #N`).
+- Aprovado (develop → main) → senior faz o merge. Exceção: Matheus tem permissão de mergear `develop → main` diretamente quando pedir.
 
 ## Skills relacionadas
 
 - Mensagem do commit que vai compor o PR: `workflow-commits`
 - Estratégia de branches: `workflow-branching`
-- Mover issue para In Review após abrir PR: `workflow-project-board`
+- Template de issue, milestones, sprints, priorização: `workflow-issues`
 - Ratchet de qualidade que bloqueia merge: `ratchet-feature-list`

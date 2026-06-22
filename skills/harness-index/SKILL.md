@@ -24,7 +24,7 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 - Sem `any`/escape hatches no type system. Sem código comentado em commits. Sem debug prints.
 - Conteúdo de documentação em **português-BR**. Identificadores técnicos (tipo de commit, slug de branch, label de issue) em **inglês**.
 - No fim de cada sessão, **mostre ao dev** o conteúdo atualizado de `.gsd/progress/<MID>-<SID>.md` para ele colar manualmente. Você **não** escreve sozinho em `.gsd/` fora do bootstrap inicial.
-- Antes de qualquer trabalho com issue/branch/PR, verifique se o Forgejo Project existe — se não, invoque `workflow-project-board` para criar.
+- Antes de qualquer trabalho com issue/branch/PR, verifique se as milestones do ROADMAP existem no Forgejo — se faltar, rode a sincronia em `workflow-issues`. (Sem project board: trabalhamos com issues, milestones, sprints-como-label e branches. GitHub é só espelho de backup.)
 - No início de toda sessão, execute o ritual de abertura (`session-rituals` → wake-up + search direcionado). Antes de propor decisão arquitetural, search antes — se há decisão prévia, exponha-a literalmente.
 - No fim de toda sessão (sinalizado pelo dev), execute o ritual de fechamento (recap de decisões → drawers explícitos → progress log).
 
@@ -33,10 +33,9 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | O dev pediu… | Invoque |
 | --- | --- |
 | Criar branch, naming, hierarquia develop/main | `workflow-branching` |
-| Abrir issue, template, ciclo Backlog→Done, assign ao dev | `workflow-issues` |
+| Abrir/priorizar issue, template, milestones, sprints, assign ao dev, sincronia ROADMAP → Forgejo | `workflow-issues` |
 | Abrir PR, `Closes #N`, validação, auto-merge em develop | `workflow-prs` |
 | Mensagem de commit (Conventional Commits) | `workflow-commits` |
-| Forgejo Project (6 colunas, criar via UI, sincronia ROADMAP) | `workflow-project-board` |
 | Adicionar feature, atualizar baseline, ratchet | `ratchet-feature-list` |
 | Código frontend, testes (3 princípios), Playwright E2E | `stack-react-vite-scss` |
 | Código backend (Django, DRF, JWT) | `stack-django-drf-jwt` |
@@ -44,11 +43,33 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
 
+## Delegação para subagentes especializados
+
+Ao receber uma tarefa de **implementação ou revisão**, delegue para o subagente especializado via `Agent(subagent_type: "nome")` antes de executar diretamente. O subagente recebe o contexto do harness (AGENTS.md, STACK.md) como briefing — inclua-o no prompt.
+
+| Tipo de tarefa | Subagente |
+| --- | --- |
+| Implementar código backend Django/DRF | `django-developer` |
+| Implementar código backend FastAPI | `fastapi-developer` |
+| Implementar código frontend React/Next.js/TypeScript | `frontend-developer` |
+| TypeScript puro (sem framework específico) | `typescript-pro` |
+| Revisar diff / PR (code review) | `code-reviewer` |
+| Auditoria de segurança | `security-auditor` |
+| Escrever ou atualizar testes | `test-automator` |
+| Decisão ou revisão de arquitetura | `architect-reviewer` |
+| Documentação técnica | `technical-writer` |
+| Infra, CI/CD, SRE | `sre-engineer` |
+
+**Quando NÃO delegar:** tarefas de uma linha, lookups, leitura de arquivo, perguntas sobre o harness, workflow (branch/commit/PR/issue) — essas ficam no agente principal.
+
+**Os subagentes são instalados por `setup.sh`** (step 4) a partir de `MatheusSlvRibeiro/awesome-claude-code-subagents`. Se um subagente não for encontrado, execute a tarefa diretamente e avise o dev para rodar `setup.sh` novamente.
+
 ## Contratos adicionais (todas as sessões)
 
 - **Branch naming**: slug descritivo em kebab-case. **NUNCA** use número de issue (`feat/issue-42` é inválido).
 - **Issue assign**: ao pegar qualquer issue, atribua-a ao dev imediatamente. Se o usuário não for conhecido, peça autenticação antes de continuar.
 - **Merge em develop**: PRs `feat/* → develop` podem ser mergeados pelo próprio dev após testar e aprovar — sem necessidade de senior. PRs `develop → main` exigem aprovação de senior.
+- **Merge em main pelo Matheus**: Matheus tem permissão de mergear `develop → main` diretamente quando pedir — sem aguardar processo de release formal.
 - **Testes frontend**: todo componente/função deve cobrir os 3 princípios — parâmetros, ações e o que pode dar errado. Fluxos críticos exigem teste Playwright E2E.
 - **Playwright**: instale por projeto (`npm install -D @playwright/test && npx playwright install --with-deps chromium`). Inclua `test:e2e` no script do `package.json`.
 

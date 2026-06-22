@@ -54,7 +54,7 @@ cp .env.example .env     # preencha as variáveis necessárias
 <comando de dev>
 ```
 
-Depois de instalar as dependências, verifique se existe um GitHub Project para o repositório (ver skill `workflow-project-board`). Se não existir, crie antes de qualquer outro trabalho.
+Depois de instalar as dependências, verifique se as milestones do ROADMAP existem no Forgejo (ver skill `workflow-issues`). Se faltar, rode a sincronia ROADMAP → Forgejo antes de qualquer outro trabalho. (Sem project board — só milestones, labels e issues.)
 
 ---
 

@@ -66,21 +66,13 @@ else
     echo "  jq $(jq --version) — ok"
 fi
 
-# gh (GitHub CLI)
-if ! command -v gh >/dev/null 2>&1; then
-    echo "  Instalando gh (GitHub CLI)..."
-    if [[ "$_OS" == "mac" ]]; then
-        brew install gh
-    else
-        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-            | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-            | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
-        _APT_UPDATED=0  # forçar re-update após novo source
-        apt_install gh
-    fi
+# curl (operações de issue/milestone no Forgejo via API)
+if ! command -v curl >/dev/null 2>&1; then
+    echo "  Instalando curl..."
+    if [[ "$_OS" == "mac" ]]; then brew install curl
+    else apt_install curl; fi
 else
-    echo "  gh $(gh --version | head -1 | awk '{print $3}') — ok"
+    echo "  curl $(curl --version | head -1 | awk '{print $2}') — ok"
 fi
 
 if [[ "$SKIP_MCP" != "1" ]]; then
@@ -107,7 +99,7 @@ fi
 _missing=()
 command -v git >/dev/null 2>&1     || _missing+=("git")
 command -v jq  >/dev/null 2>&1     || _missing+=("jq")
-command -v gh  >/dev/null 2>&1     || _missing+=("gh")
+command -v curl >/dev/null 2>&1    || _missing+=("curl")
 if [[ "$SKIP_MCP" != "1" ]]; then
     command -v python3 >/dev/null 2>&1 || _missing+=("python3")
     command -v uv      >/dev/null 2>&1 || _missing+=("uv")
