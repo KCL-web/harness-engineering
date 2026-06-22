@@ -87,6 +87,23 @@ Prioridade é o **único** controle manual: adicione o label `priority` às pouc
 - Issue criada pela sincronia ROADMAP→Forgejo carrega `Task: <MID>-<SID>-<TID>` na 1ª linha do body (rastreável; impede duplicata) + milestone do `M0X` + label `sprint/M0X-S0X`.
 - Issue criada manualmente que cobre uma task do ROADMAP também adiciona o marcador `Task:`, a milestone e o label de sprint.
 - Direção da sincronia é **só** ROADMAP → Forgejo. Nunca apague/feche issues para refletir mudanças no ROADMAP.
+- **Ao pegar uma issue, atribua-a (assign) ao usuário do dev imediatamente.** Se o usuário não for conhecido, peça que ele informe o username antes de continuar. Issue sem assignee não pode entrar em progresso.
+
+## Como atribuir (assign) uma issue via API
+
+```bash
+curl -s -X PATCH \
+  -H "Authorization: token $FORGEJO_TOKEN" \
+  -H "Content-Type: application/json" \
+  "$FORGEJO_URL/api/v1/repos/$FORGEJO_ORG/<repo>/issues/<numero>" \
+  -d "{\"assignees\": [\"<username-do-dev>\"]}" | jq '{number, title, assignees: [.assignees[].login]}'
+```
+
+Se `$FORGEJO_TOKEN` ou o username não estiverem disponíveis, solicite ao dev:
+```
+Para continuar preciso do seu usuário no Forgejo.
+Informe seu username (ou exporte FORGEJO_TOKEN) para fazer o assign da issue.
+```
 
 ---
 

@@ -87,10 +87,24 @@ curl -s -X POST \
   }" | jq '{number, title, html_url}'
 ```
 
+## Merge automático feat/* → develop
+
+PRs de `feat/*` (ou `fix/*`, `chore/*`, etc.) com destino a `develop` podem ser mergeados pelo próprio dev assim que:
+
+1. O dev testou as alterações na branch localmente ou em ambiente de preview.
+2. O dev aprovou o PR (review de si mesmo ou de outro membro, dependendo do projeto).
+3. Todos os checks de CI passaram (validação do projeto verde).
+4. Nenhum item do **Test plan** no body do PR está pendente.
+
+Nesse cenário, **não é necessário aguardar aprovação de senior** — o dev pode mergear imediatamente após aprovar.
+
+> PRs de `develop → main` ainda exigem aprovação de senior (produção).
+
 ## Ao receber feedback no PR
 
 - Mudanças requeridas → endereçar feedback na própria branch, push, comentar na PR com resumo do que mudou. A PR continua aberta (issue segue "em review").
-- Aprovado → senior faz o merge. A issue **fecha** automaticamente (pelo `Closes #N`).
+- Aprovado (feat/* → develop) → dev pode mergear diretamente. A issue **fecha** automaticamente (pelo `Closes #N`).
+- Aprovado (develop → main) → senior faz o merge. Exceção: Matheus tem permissão de mergear `develop → main` diretamente quando pedir.
 
 ## Skills relacionadas
 

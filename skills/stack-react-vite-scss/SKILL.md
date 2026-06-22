@@ -228,6 +228,42 @@ Schemas de um único form ficam na mesma pasta. Schemas de 2+ forms vão para `s
 
 ## Testes (Vitest + Testing Library)
 
+### Os 3 princípios obrigatórios
+
+Todo teste de componente ou função deve cobrir pelo menos estes três ângulos:
+
+#### 1. Parâmetros (variações de entrada)
+Teste cada variante relevante dos props/argumentos. Se um componente aceita `variant="primary" | "secondary"`, ambas devem ter teste. Se uma função aceita um número, teste limites (0, negativo, muito grande).
+
+```ts
+it('renderiza variant primary', () => { ... });
+it('renderiza variant secondary', () => { ... });
+it('usa primary como padrão quando variant não é passado', () => { ... });
+```
+
+#### 2. Ações (cada interação é candidata a teste)
+Cada ação do usuário que o componente suporta (click, submit, change, hover com efeito visível) é um candidato de teste.
+
+```ts
+it('chama onSubmit com dados corretos ao submeter o form', async () => { ... });
+it('desabilita o botão enquanto isSubmitting é true', async () => { ... });
+it('limpa o campo ao clicar em reset', async () => { ... });
+```
+
+#### 3. O que pode dar errado (dados inválidos, nulos, invertidos, edge cases)
+- Dados inválidos: email sem `@`, senha curta demais, CPF com letras.
+- Dados nulos/undefined: prop obrigatória ausente, resposta de API vazia.
+- Dados invertidos: ordenação DESC quando se espera ASC, booleano negado.
+- Boundary: string vazia `""`, array vazio `[]`, objeto `{}`.
+
+```ts
+it('exibe erro quando email é inválido', async () => { ... });
+it('exibe estado vazio quando lista retorna []', () => { ... });
+it('não quebra quando onClose é undefined', () => { ... });
+```
+
+### Exemplo completo aplicando os 3 princípios
+
 ```ts
 // Button.test.tsx
 import { render, screen } from '@testing-library/react';
@@ -236,14 +272,41 @@ import { describe, it, expect, vi } from 'vitest';
 import { Button } from './Button';
 
 describe('Button', () => {
+  // Parâmetros
+  it('renderiza label corretamente', () => {
+    render(<Button label="Salvar" onClick={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Salvar' })).toBeInTheDocument();
+  });
+
+  it('aplica classe primary por padrão', () => {
+    render(<Button label="X" onClick={vi.fn()} />);
+    expect(screen.getByRole('button')).toHaveClass('button--primary');
+  });
+
+  it('aplica classe secondary quando variant="secondary"', () => {
+    render(<Button label="X" variant="secondary" onClick={vi.fn()} />);
+    expect(screen.getByRole('button')).toHaveClass('button--secondary');
+  });
+
+  // Ações
   it('chama onClick ao clicar', async () => {
     const handler = vi.fn();
     render(<Button label="Salvar" onClick={handler} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Salvar' }));
+    await userEvent.click(screen.getByRole('button'));
     expect(handler).toHaveBeenCalledOnce();
+  });
+
+  // O que pode dar errado
+  it('não chama onClick quando desabilitado', async () => {
+    const handler = vi.fn();
+    render(<Button label="Salvar" onClick={handler} disabled />);
+    await userEvent.click(screen.getByRole('button'));
+    expect(handler).not.toHaveBeenCalled();
   });
 });
 ```
+
+### Regras de testes unitários / integração
 
 - Toda função em `src/lib/` precisa de teste em `src/lib/__tests__/`.
 - Testes de componente ficam colocados junto (`Button.test.tsx`).
@@ -266,6 +329,118 @@ test: {
 // src/test-setup.ts
 import '@testing-library/jest-dom';
 ```
+
+## Testes UX/UI com Playwright
+
+Playwright é usado para testes end-to-end que verificam fluxos completos no browser — navegação, formulários multi-step, comportamento responsivo e acessibilidade visual.
+
+### Quando usar Playwright vs Vitest
+
+| Cenário | Ferramenta |
+| --- | --- |
+| Lógica de função/hook isolada | Vitest |
+| Componente renderizando e respondendo a eventos | Vitest + Testing Library |
+| Fluxo completo (login → dashboard → ação) | Playwright |
+| Comportamento visual / layout / responsividade | Playwright |
+| Interações que dependem de navegação real | Playwright |
+
+### Instalação (por projeto)
+
+```bash
+npm install -D @playwright/test
+npx playwright install --with-deps chromium
+```
+
+Adicione ao `package.json`:
+```json
+{
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  }
+}
+```
+
+### Estrutura de pastas
+
+```
+e2e/
+├── fixtures/          # dados de teste reutilizáveis
+├── pages/             # Page Object Models (POM)
+│   └── LoginPage.ts
+└── tests/
+    └── login.spec.ts
+```
+
+### Exemplo com os 3 princípios aplicados a E2E
+
+```ts
+// e2e/tests/login.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Login', () => {
+  // Parâmetros: credenciais válidas e inválidas
+  test('loga com credenciais corretas', async ({ page }) => {
+    await page.goto('/login');
+    await page.fill('[name="email"]', 'user@example.com');
+    await page.fill('[name="password"]', 'senha123');
+    await page.click('button[type="submit"]');
+    await expect(page).toHaveURL('/dashboard');
+  });
+
+  // Ação: submit do formulário
+  test('exibe spinner durante submit', async ({ page }) => {
+    await page.goto('/login');
+    await page.fill('[name="email"]', 'user@example.com');
+    await page.fill('[name="password"]', 'senha123');
+    await page.click('button[type="submit"]');
+    await expect(page.getByRole('progressbar')).toBeVisible();
+  });
+
+  // O que pode dar errado: credenciais inválidas, campos vazios
+  test('exibe erro com senha errada', async ({ page }) => {
+    await page.goto('/login');
+    await page.fill('[name="email"]', 'user@example.com');
+    await page.fill('[name="password"]', 'errada');
+    await page.click('button[type="submit"]');
+    await expect(page.getByRole('alert')).toContainText('Credenciais inválidas');
+  });
+
+  test('bloqueia submit com campos vazios', async ({ page }) => {
+    await page.goto('/login');
+    await page.click('button[type="submit"]');
+    await expect(page.getByRole('alert')).toBeVisible();
+    await expect(page).toHaveURL('/login');
+  });
+});
+```
+
+### playwright.config.ts mínimo
+
+```ts
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e/tests',
+  use: {
+    baseURL: 'http://localhost:5173',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+  },
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:5173',
+    reuseExistingServer: !process.env.CI,
+  },
+});
+```
+
+### Regras
+
+- Todo fluxo crítico (login, checkout, cadastro, pagamento) precisa de pelo menos um teste Playwright cobrindo os 3 princípios.
+- Playwright roda separado dos testes Vitest — não misture no mesmo comando de CI.
+- Adicione `playwright install` ao setup do projeto (veja `scripts/setup.sh`).
+- Screenshots e vídeos de falha são artifacts de CI — configure `reporter: 'html'` para revisão.
 
 ## Regras inegociáveis
 

@@ -74,6 +74,37 @@ else
 fi
 
 echo ""
+echo "Subagents (awesome-claude-code-subagents):"
+SUBAGENTS_DIR="$HOME/.claude/subagents-awesome"
+AGENTS_DIR="$HOME/.claude/agents"
+if [[ -d "$SUBAGENTS_DIR/.git" ]]; then
+    echo "  [OK]    $SUBAGENTS_DIR (repo clonado)"
+else
+    echo "  [FALTA] subagents não instalados"
+    echo "          Rode: ./scripts/setup.sh"
+    any_missing=1
+fi
+if [[ -d "$AGENTS_DIR" ]]; then
+    _count=$(find "$AGENTS_DIR" -name "*.md" | wc -l | tr -d ' ')
+    echo "  [OK]    $AGENTS_DIR ($_count agente(s) linkados)"
+else
+    echo "  [FALTA] diretório $AGENTS_DIR não existe"
+    echo "          Rode: ./scripts/setup.sh"
+    any_missing=1
+fi
+
+echo ""
+echo "Playwright:"
+if command -v node >/dev/null 2>&1 && npx --yes playwright --version >/dev/null 2>&1; then
+    _pw_version=$(npx playwright --version 2>/dev/null | head -1)
+    echo "  [OK]    $_pw_version"
+else
+    echo "  [AVISO] playwright não encontrado globalmente"
+    echo "          Instale por projeto: npm install -D @playwright/test"
+    echo "          Depois: npx playwright install --with-deps chromium"
+fi
+
+echo ""
 echo "MemPalace auto-save hooks:"
 save_hook="$HOME/.claude/hooks/mempalace/mempal_save_hook.sh"
 precompact_hook="$HOME/.claude/hooks/mempalace/mempal_precompact_hook.sh"

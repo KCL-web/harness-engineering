@@ -33,15 +33,45 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | O dev pediu… | Invoque |
 | --- | --- |
 | Criar branch, naming, hierarquia develop/main | `workflow-branching` |
-| Abrir/priorizar issue, template, milestones, sprints, sincronia ROADMAP → Forgejo | `workflow-issues` |
-| Abrir PR, `Closes #N`, validação | `workflow-prs` |
+| Abrir/priorizar issue, template, milestones, sprints, assign ao dev, sincronia ROADMAP → Forgejo | `workflow-issues` |
+| Abrir PR, `Closes #N`, validação, auto-merge em develop | `workflow-prs` |
 | Mensagem de commit (Conventional Commits) | `workflow-commits` |
 | Adicionar feature, atualizar baseline, ratchet | `ratchet-feature-list` |
-| Código frontend (React, Vite, SCSS, RHF, zod, BEM, aliases) | `stack-react-vite-scss` |
+| Código frontend, testes (3 princípios), Playwright E2E | `stack-react-vite-scss` |
 | Código backend (Django, DRF, JWT) | `stack-django-drf-jwt` |
 | Memória cross-projeto (wings/rooms/drawers, MemPalace) | `memory-palace` |
 | Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
+
+## Delegação para subagentes especializados
+
+Ao receber uma tarefa de **implementação ou revisão**, delegue para o subagente especializado via `Agent(subagent_type: "nome")` antes de executar diretamente. O subagente recebe o contexto do harness (AGENTS.md, STACK.md) como briefing — inclua-o no prompt.
+
+| Tipo de tarefa | Subagente |
+| --- | --- |
+| Implementar código backend Django/DRF | `django-developer` |
+| Implementar código backend FastAPI | `fastapi-developer` |
+| Implementar código frontend React/Next.js/TypeScript | `frontend-developer` |
+| TypeScript puro (sem framework específico) | `typescript-pro` |
+| Revisar diff / PR (code review) | `code-reviewer` |
+| Auditoria de segurança | `security-auditor` |
+| Escrever ou atualizar testes | `test-automator` |
+| Decisão ou revisão de arquitetura | `architect-reviewer` |
+| Documentação técnica | `technical-writer` |
+| Infra, CI/CD, SRE | `sre-engineer` |
+
+**Quando NÃO delegar:** tarefas de uma linha, lookups, leitura de arquivo, perguntas sobre o harness, workflow (branch/commit/PR/issue) — essas ficam no agente principal.
+
+**Os subagentes são instalados por `setup.sh`** (step 4) a partir de `MatheusSlvRibeiro/awesome-claude-code-subagents`. Se um subagente não for encontrado, execute a tarefa diretamente e avise o dev para rodar `setup.sh` novamente.
+
+## Contratos adicionais (todas as sessões)
+
+- **Branch naming**: slug descritivo em kebab-case. **NUNCA** use número de issue (`feat/issue-42` é inválido).
+- **Issue assign**: ao pegar qualquer issue, atribua-a ao dev imediatamente. Se o usuário não for conhecido, peça autenticação antes de continuar.
+- **Merge em develop**: PRs `feat/* → develop` podem ser mergeados pelo próprio dev após testar e aprovar — sem necessidade de senior. PRs `develop → main` exigem aprovação de senior.
+- **Merge em main pelo Matheus**: Matheus tem permissão de mergear `develop → main` diretamente quando pedir — sem aguardar processo de release formal.
+- **Testes frontend**: todo componente/função deve cobrir os 3 princípios — parâmetros, ações e o que pode dar errado. Fluxos críticos exigem teste Playwright E2E.
+- **Playwright**: instale por projeto (`npm install -D @playwright/test && npx playwright install --with-deps chromium`). Inclua `test:e2e` no script do `package.json`.
 
 ## Onde buscar configuração do projeto
 
