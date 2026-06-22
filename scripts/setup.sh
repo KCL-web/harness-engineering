@@ -18,6 +18,10 @@ CLAUDE_COMMANDS_DIR="$CLAUDE_DIR/commands"
 SKIP_MCP="${SKIP_MCP:-0}"
 FORCE="${FORCE:-0}"
 
+SUBAGENTS_REPO="https://github.com/MatheusSlvRibeiro/awesome-claude-code-subagents"
+SUBAGENTS_DIR="$HOME/.claude/subagents-awesome"
+AGENTS_DIR="$CLAUDE_DIR/agents"
+
 echo "=== Harness Engineering Setup ==="
 echo "Repo:   $REPO_ROOT"
 echo "Target: $SKILLS_TARGET"
@@ -294,9 +298,61 @@ else
     echo "[4/5] Pulando MCPs (SKIP_MCP=1)"
 fi
 
-# --- 5. Doctor --------------------------------------------------------------
+# --- 5. Subagents (awesome-claude-code-subagents) ---------------------------
 echo ""
-echo "[5/5] Verificação final..."
+echo "[5/7] Instalando subagents..."
+mkdir -p "$AGENTS_DIR"
+if [[ -d "$SUBAGENTS_DIR/.git" ]]; then
+    echo "  Atualizando subagents existentes..."
+    git -C "$SUBAGENTS_DIR" pull --ff-only --quiet 2>/dev/null || echo "  Aviso: não foi possível atualizar (offline?)."
+elif [[ "$FORCE" == "1" && -d "$SUBAGENTS_DIR" ]]; then
+    echo "  FORCE=1: removendo clone anterior..."
+    rm -rf "$SUBAGENTS_DIR"
+    git clone --depth 1 --quiet "$SUBAGENTS_REPO" "$SUBAGENTS_DIR" \
+        && echo "  Clonado em $SUBAGENTS_DIR" \
+        || echo "  Falha ao clonar. Verifique acesso à internet."
+else
+    git clone --depth 1 --quiet "$SUBAGENTS_REPO" "$SUBAGENTS_DIR" \
+        && echo "  Clonado em $SUBAGENTS_DIR" \
+        || echo "  Falha ao clonar $SUBAGENTS_REPO"
+fi
+
+# Symlink de cada arquivo .md de agente para ~/.claude/agents/
+if [[ -d "$SUBAGENTS_DIR" ]]; then
+    _linked=0
+    for agent_file in "$SUBAGENTS_DIR"/*.md "$SUBAGENTS_DIR"/agents/*.md; do
+        [[ -f "$agent_file" ]] || continue
+        agent_name="$(basename "$agent_file")"
+        agent_target="$AGENTS_DIR/$agent_name"
+        if [[ -L "$agent_target" || -e "$agent_target" ]]; then
+            [[ "$FORCE" == "1" ]] && rm -f "$agent_target" || continue
+        fi
+        ln -s "$agent_file" "$agent_target"
+        _linked=$((_linked + 1))
+    done
+    echo "  $_linked agente(s) linkados em $AGENTS_DIR"
+fi
+
+# --- 6. Playwright (browsers) -----------------------------------------------
+echo ""
+echo "[6/7] Verificando Playwright..."
+if command -v node >/dev/null 2>&1; then
+    if npx --yes playwright --version >/dev/null 2>&1; then
+        echo "  playwright CLI disponível — instalando browsers mínimos (chromium)..."
+        npx playwright install --with-deps chromium 2>/dev/null \
+            && echo "  chromium instalado." \
+            || echo "  Aviso: falha ao instalar chromium. Rode manualmente: npx playwright install --with-deps chromium"
+    else
+        echo "  @playwright/test não encontrado globalmente — será instalado por projeto (npm install -D @playwright/test)."
+        echo "  Após instalar no projeto, rode: npx playwright install --with-deps chromium"
+    fi
+else
+    echo "  node não disponível — pule esta etapa e instale Playwright no projeto após instalar node."
+fi
+
+# --- 7. Doctor --------------------------------------------------------------
+echo ""
+echo "[7/7] Verificação final..."
 "$REPO_ROOT/scripts/doctor.sh"
 
 echo ""

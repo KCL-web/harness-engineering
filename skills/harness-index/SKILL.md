@@ -33,16 +33,24 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | O dev pediu… | Invoque |
 | --- | --- |
 | Criar branch, naming, hierarquia develop/main | `workflow-branching` |
-| Abrir issue, template, ciclo Backlog→Done | `workflow-issues` |
-| Abrir PR, `Closes #N`, validação | `workflow-prs` |
+| Abrir issue, template, ciclo Backlog→Done, assign ao dev | `workflow-issues` |
+| Abrir PR, `Closes #N`, validação, auto-merge em develop | `workflow-prs` |
 | Mensagem de commit (Conventional Commits) | `workflow-commits` |
 | Forgejo Project (6 colunas, criar via UI, sincronia ROADMAP) | `workflow-project-board` |
 | Adicionar feature, atualizar baseline, ratchet | `ratchet-feature-list` |
-| Código frontend (React, Vite, SCSS, RHF, zod, BEM, aliases) | `stack-react-vite-scss` |
+| Código frontend, testes (3 princípios), Playwright E2E | `stack-react-vite-scss` |
 | Código backend (Django, DRF, JWT) | `stack-django-drf-jwt` |
 | Memória cross-projeto (wings/rooms/drawers, MemPalace) | `memory-palace` |
 | Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
+
+## Contratos adicionais (todas as sessões)
+
+- **Branch naming**: slug descritivo em kebab-case. **NUNCA** use número de issue (`feat/issue-42` é inválido).
+- **Issue assign**: ao pegar qualquer issue, atribua-a ao dev imediatamente. Se o usuário não for conhecido, peça autenticação antes de continuar.
+- **Merge em develop**: PRs `feat/* → develop` podem ser mergeados pelo próprio dev após testar e aprovar — sem necessidade de senior. PRs `develop → main` exigem aprovação de senior.
+- **Testes frontend**: todo componente/função deve cobrir os 3 princípios — parâmetros, ações e o que pode dar errado. Fluxos críticos exigem teste Playwright E2E.
+- **Playwright**: instale por projeto (`npm install -D @playwright/test && npx playwright install --with-deps chromium`). Inclua `test:e2e` no script do `package.json`.
 
 ## Onde buscar configuração do projeto
 

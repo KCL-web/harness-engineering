@@ -62,6 +62,24 @@ Checklist. Só vira Done quando todo item está marcado.
 - Issue criada pela sincronia ROADMAP→Forgejo carrega `Task: <MID>-<SID>-<TID>` na primeira linha do body (rastreável; impede duplicata).
 - Issue criada manualmente também deve adicionar `Task:` se cobrir uma task do ROADMAP.
 - Antes de começar a trabalhar em uma issue, mova-a para In Progress.
+- **Ao pegar uma issue, atribua-a (assign) ao usuário do dev imediatamente.** Se o usuário do dev não for conhecido, peça que ele se autentique na máquina antes de continuar (`forgejo auth login` ou equivalente). Issue sem assignee não pode ser movida para In Progress.
+
+## Como atribuir (assign) uma issue via API
+
+```bash
+curl -s -X PATCH \
+  -H "Authorization: token $FORGEJO_TOKEN" \
+  -H "Content-Type: application/json" \
+  "https://git.kcl.net.br/api/v1/repos/$FORGEJO_ORG/<repo>/issues/<numero>" \
+  -d "{\"assignees\": [\"<username-do-dev>\"]}" | jq '{number, title, assignees: [.assignees[].login]}'
+```
+
+Se `$FORGEJO_TOKEN` ou o username não estiverem disponíveis, solicite ao dev:
+```
+Para continuar preciso do seu usuário no Forgejo.
+Por favor, rode: forgejo auth login
+ou informe seu username para fazer o assign da issue.
+```
 
 ## Mover issue entre colunas
 
