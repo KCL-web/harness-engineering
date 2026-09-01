@@ -43,6 +43,49 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
 
+## Skills importadas de mattpocock/skills (disciplina de engenharia agnóstica de stack)
+
+Importadas de [mattpocock/skills](https://github.com/mattpocock/skills) e adaptadas ao vocabulário deste harness (tracker = Forgejo, sessões dev/QA). Rode `setup-imported-skills` uma vez por projeto antes de usar `triage`, `domain-modeling` ou `grill-with-docs` (mapeia labels de triage e decide layout de `CONTEXT.md`/ADR).
+
+**User-invoked** (o dev digita explicitamente; nunca acionadas sozinhas pelo modelo):
+
+| O dev pediu… | Invoque |
+| --- | --- |
+| Não sabe qual skill usar, quer um roteador | `ask-matt` |
+| Entrevista implacável antes de codar (alinhamento) | `grill-me` |
+| Igual acima, mas também constrói `CONTEXT.md`/ADR inline | `grill-with-docs` |
+| Transformar a conversa numa spec e publicar como issue | `to-spec` |
+| Quebrar spec/plano em tickets tracer-bullet com dependências | `to-tickets` |
+| Implementar o que está em spec/tickets, terminando com `code-review` | `implement` |
+| Planejar trabalho maior que uma sessão aguenta, como grafo de decisões | `wayfinder` |
+| Mover issues/PRs externas por estados de triagem | `triage` |
+| Varrer a codebase por oportunidades de deepening (relatório HTML) | `improve-codebase-architecture` |
+| Compactar a sessão atual num handoff para outro agente continuar | `handoff` |
+| Ensinar o dev uma skill/conceito ao longo de várias sessões | `teach` |
+| Transformar uma decisão em questionário para outra pessoa responder | `to-questionnaire` |
+| "Não entendi, repete o pitch" quando uma mensagem não fez sentido | `wait-what` |
+| Configurar labels de triage e layout de `CONTEXT.md`/ADR (uma vez por projeto) | `setup-imported-skills` |
+
+**Model-invoked** (podem ser acionadas por você mesmo quando a tarefa encaixa, sem o dev precisar digitar):
+
+| Situação | Invoque |
+| --- | --- |
+| TDD, red-green-refactor, teste antes do código | `tdd` |
+| Loop de diagnóstico para bug difícil ou regressão de performance | `diagnosing-bugs` |
+| Revisar diff/PR em dois eixos (Standards vs. Spec da issue) | `code-review` |
+| Vocabulário de módulo profundo/interface/seam ao desenhar código | `codebase-design` |
+| Afiar termo de domínio, atualizar `CONTEXT.md`/ADR inline | `domain-modeling` |
+| Protótipo descartável para responder pergunta de design de UI/lógica | `prototype` |
+| Investigar pergunta contra fontes primárias, registrar achados citados | `research` |
+| Resolver conflito de merge/rebase em andamento hunk a hunk | `resolving-merge-conflicts` |
+| Gerar wizard bash interativo para passo manual (credencial, infra, migration) | `wizard` |
+| Primitiva de entrevista implacável por trás de `grill-me`/`grill-with-docs`/`triage`/`wayfinder` | `grilling` |
+| Escrever/editar skill, AGENTS.md/CLAUDE.md, ou doc que um agente lê por ponteiro | `writing-for-agents` |
+| Configurar hook do Claude Code contra comando git perigoso | `git-guardrails-claude-code` |
+| Migrar teste de type assertion `as` para `@total-typescript/shoehorn` | `migrate-to-shoehorn` |
+| Criar estrutura de diretório de exercícios (sections/problems/solutions) | `scaffold-exercises` |
+| Configurar hooks de pre-commit (Husky + lint-staged + type check) | `setup-pre-commit` |
+
 ## Delegação para subagentes especializados
 
 Ao receber uma tarefa de **implementação ou revisão**, delegue para o subagente especializado via `Agent(subagent_type: "nome")` antes de executar diretamente. O subagente recebe o contexto do harness (AGENTS.md, STACK.md) como briefing — inclua-o no prompt.
