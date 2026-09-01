@@ -42,6 +42,7 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | Memória cross-projeto (wings/rooms/drawers, MemPalace) | `memory-palace` |
 | Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
+| Auditoria de segurança completa (validação final ou bootstrap de projeto existente) | `security-audit` |
 
 ## Skills importadas de mattpocock/skills (disciplina de engenharia agnóstica de stack)
 
