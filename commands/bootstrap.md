@@ -43,6 +43,8 @@ f) Arquivos de entrada (`page`, `route`, `index`, `main`)
 
 Depois da análise, mostre um SUMÁRIO CURTO (5–10 linhas) com stack identificada, propósito aparente, maturidade, o que está obscuro. Espere confirmação.
 
+Em seguida, **ofereça rodar a skill `security-audit`** antes de continuar a entrevista — em projeto existente, vale surfacear falhas de segurança logo no início em vez de descobri-las só na validação final. É uma auditoria pesada (gera PDF e pode levar bastante tempo): pergunte ao dev se quer rodar agora ou pular para depois. Se ele topar, invoque `security-audit` e só volte para a entrevista quando ela terminar.
+
 ## Entrevista (single-repo)
 
 **Fluxo: rascunho primeiro, perguntas depois.**
