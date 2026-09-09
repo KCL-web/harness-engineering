@@ -27,7 +27,7 @@ Este arquivo é o índice da skill. Leia só o arquivo do tópico que a tarefa a
 - Sem `any`. Sem inline styles. Sem import de CSS global dentro de componente.
 - `@/` em vez de paths relativos com `../../`.
 - Schema zod para todo input externo (forms, resposta de API, params de URL).
-- Toda função em `src/lib/` tem teste correspondente.
+- Função em `src/lib/` tem teste quando tem ramificação, cálculo, parsing, ou já causou bug — não para re-export, constante ou wrapper trivial.
 - Componente sobe para `src/components/` só quando há 2+ usos reais.
 - Export nomeado para componentes não-page (facilita tree-shaking e grep).
 
