@@ -41,7 +41,6 @@ Documento de referência completo: [`docs/harness-v2/overview.md`](docs/harness-
 | `python` ≥ 3.9, [`uv`](https://docs.astral.sh/uv/) | instalar MCPs (MemPalace, OpenSpace) em envs isolados |
 | `node` ≥ 18 | Claude Code CLI |
 | `bash` ≥ 4 (Linux/macOS) ou PowerShell 5.1 (Windows) | scripts de setup/doctor |
-| `jq` | validar `.harness/feature_list.json` e `.harness/baseline.json` |
 | [RTK](https://github.com/rtk-ai/rtk) | comprime saída de comandos antes do LLM (instalado pelo setup) |
 
 `setup.sh` / `setup.ps1` valida tudo e oferece instalar o que falta.

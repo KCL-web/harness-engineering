@@ -9,7 +9,7 @@ Dois arquivos vivem aqui depois que um projeto é inicializado:
 
 ---
 
-**Precisa de `jq`** para validar. Veja o `README.md` raiz → Pré-requisitos para instruções de instalação. `setup.sh` aponta como instalar; o CI instala no runner automaticamente.
+**Precisa de `node`** para validar (já é pré-requisito do harness — ver `README.md` raiz → Pré-requisitos). O CI configura o Node.js no runner automaticamente.
 
 > Schema preservado em v2. Skill `ratchet-feature-list` (em `~/.claude/skills/harness/`) cobre as regras de uso e atualização desses dois JSONs.
 
