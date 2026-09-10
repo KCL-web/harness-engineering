@@ -57,15 +57,6 @@ else
     echo "  git $(git --version | awk '{print $3}') — ok"
 fi
 
-# jq (necessário para check-harness.sh)
-if ! command -v jq >/dev/null 2>&1; then
-    echo "  Instalando jq..."
-    if [[ "$_OS" == "mac" ]]; then brew install jq
-    else apt_install jq; fi
-else
-    echo "  jq $(jq --version) — ok"
-fi
-
 # curl (operações de issue/milestone no Forgejo via API)
 if ! command -v curl >/dev/null 2>&1; then
     echo "  Instalando curl..."
@@ -98,7 +89,6 @@ fi
 # Verificação final: aborta só se ainda faltar algo após tentativa de instalação
 _missing=()
 command -v git >/dev/null 2>&1     || _missing+=("git")
-command -v jq  >/dev/null 2>&1     || _missing+=("jq")
 command -v curl >/dev/null 2>&1    || _missing+=("curl")
 if [[ "$SKIP_MCP" != "1" ]]; then
     command -v python3 >/dev/null 2>&1 || _missing+=("python3")

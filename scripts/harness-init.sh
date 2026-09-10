@@ -97,14 +97,14 @@ UMBRELLA_PAIRS=(
   "scripts/harness-sync.sh:scripts/harness-sync.sh"
 )
 
-ensure_jq() {
-  if command -v jq >/dev/null 2>&1; then
-    echo "  jq já instalado ($(jq --version))"
+ensure_node() {
+  if command -v node >/dev/null 2>&1; then
+    echo "  node já instalado ($(node --version))"
     return 0
   fi
 
   echo
-  echo "jq é exigido por scripts/check-harness.sh mas não está instalado."
+  echo "node é exigido por scripts/check-harness.sh mas não está instalado."
 
   local installer=""
   local uname_s
@@ -114,31 +114,31 @@ ensure_jq() {
     MINGW*|MSYS*|CYGWIN*)
       # Native Windows bash (Git Bash, MSYS2, Cygwin) — use a Windows package manager
       if command -v winget >/dev/null 2>&1; then
-        installer="winget install --id jqlang.jq --silent --accept-source-agreements --accept-package-agreements"
+        installer="winget install --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements"
       elif command -v scoop >/dev/null 2>&1; then
-        installer="scoop install jq"
+        installer="scoop install nodejs-lts"
       elif command -v choco >/dev/null 2>&1; then
-        installer="choco install jq -y"
+        installer="choco install nodejs-lts -y"
       fi
       ;;
     *)
       if [ -f /etc/debian_version ] || grep -qi ubuntu /etc/os-release 2>/dev/null; then
-        installer="sudo apt-get update -qq && sudo apt-get install -y jq"
+        installer="sudo apt-get update -qq && sudo apt-get install -y nodejs"
       elif [ "$uname_s" = "Darwin" ] && command -v brew >/dev/null 2>&1; then
-        installer="brew install jq"
+        installer="brew install node"
       elif [ -f /etc/fedora-release ] || [ -f /etc/redhat-release ]; then
-        installer="sudo dnf install -y jq"
+        installer="sudo dnf install -y nodejs"
       elif command -v pacman >/dev/null 2>&1; then
-        installer="sudo pacman -S --noconfirm jq"
+        installer="sudo pacman -S --noconfirm nodejs npm"
       elif command -v apk >/dev/null 2>&1; then
-        installer="sudo apk add --no-cache jq"
+        installer="sudo apk add --no-cache nodejs npm"
       fi
       ;;
   esac
 
   if [ -z "$installer" ]; then
-    echo "  Não foi possível detectar um gerenciador de pacotes. Instale jq manualmente:"
-    echo "    https://jqlang.org/download/"
+    echo "  Não foi possível detectar um gerenciador de pacotes. Instale o Node.js manualmente:"
+    echo "    https://nodejs.org"
     return 1
   fi
 
@@ -147,8 +147,8 @@ ensure_jq() {
   case "$ans" in
     s|S|y|Y|sim|SIM|yes|YES)
       bash -c "$installer"
-      command -v jq >/dev/null 2>&1 && echo "  jq instalado: $(jq --version)" || {
-        echo "  jq ainda fora do PATH — instale manualmente antes de rodar check-harness.sh" >&2
+      command -v node >/dev/null 2>&1 && echo "  node instalado: $(node --version)" || {
+        echo "  node ainda fora do PATH — instale manualmente antes de rodar check-harness.sh" >&2
         return 1
       }
       ;;
@@ -223,7 +223,7 @@ echo
 echo "Arquivos do harness copiados."
 echo
 echo "Verificando dependências..."
-ensure_jq || true
+ensure_node || true
 echo
 
 read -r -p "Iniciar a entrevista de bootstrap agora com Claude Code? [s/N]: " START
