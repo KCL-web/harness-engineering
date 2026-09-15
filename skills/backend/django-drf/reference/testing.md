@@ -1,6 +1,6 @@
 # Testes
 
-**Use este arquivo quando:** for escrever ou revisar teste de model, serializer, view/endpoint ou service em um projeto Django + DRF.
+Referência de `backend/django-drf`. Volte ao [índice](../SKILL.md) para o quando-invocar.
 
 Stack: **pytest + pytest-django + factory_boy**.
 

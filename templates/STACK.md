@@ -3,7 +3,8 @@
 Identificação do projeto: qual stack este código usa, como validar, que ambiente ele precisa.
 
 Este arquivo é **preenchido pela entrevista de bootstrap** e **nunca é sobrescrito por scripts de sincronia**.
-As convenções de código (folder layout, componentes, testes, schemas) **não** vão aqui — vêm da skill `stack-<archetype>` que combina com esta stack (ver `skills/harness-index`).
+As convenções de código (folder layout, componentes, testes, schemas) **não** vão aqui — vêm da
+combinação de skills atômicas `frontend/*`/`backend/*` que casam com esta stack (ver `skills/harness-index`).
 
 ---
 
@@ -19,7 +20,7 @@ As convenções de código (folder layout, componentes, testes, schemas) **não*
 - Gerenciador de pacotes:
 - Deploy:
 
-**Archetype skill correspondente:** <ex.: `stack-react-vite-scss` · `stack-django-drf-jwt` · ou "nenhum ainda — convenções emergem via OpenSpace">
+**Skills atômicas correspondentes:** <ex.: `frontend/react` + `frontend/tailwind` + `backend/django-drf` + `backend/jwt-cookie-auth` · ou "nenhuma ainda — convenções emergem via OpenSpace">
 
 ---
 

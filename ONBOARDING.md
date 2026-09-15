@@ -9,7 +9,9 @@
 O **harness v2** é um conjunto de **skills**, **MCPs** e tooling que fazem toda sessão de Claude Code começar já sabendo:
 
 - **Workflow** — branches, commits, PRs, issues/milestones/sprints, ratchet de qualidade. Vive em skills `workflow-*` e `ratchet-feature-list`.
-- **Convenções de stack** — folder layout, componentes, testes, schemas. Vive em skills `stack-<archetype>` (`stack-react-vite-scss`, `stack-django-drf-jwt`...).
+- **Convenções de stack** — folder layout, componentes, testes, schemas. Vive em skills atômicas
+  `frontend/*`/`backend/*` (`frontend/react`, `frontend/tailwind`, `backend/django-drf`...) que se
+  combinam conforme a stack do projeto.
 - **Memória cross-projeto** — decisões arquiteturais, postmortems, termos de domínio. Vive no MemPalace (MCP), com convenção em `memory-palace`.
 - **Evolução** — skills que melhoram com o uso real via OpenSpace (FIX/DERIVED/CAPTURED). Convenção em `evolving-skills`.
 
@@ -63,7 +65,7 @@ Antes da primeira tarefa real, peça:
 
 > "Liste as skills do harness disponíveis nesta sessão e resume em uma frase o que cada uma cobre."
 
-Se aparecer `harness-index`, `workflow-*`, `stack-*`, `memory-palace`, `evolving-skills` e `ratchet-feature-list` — você está bom. Se não aparecerem, o symlink não está ativo: rode `~/harness-engineering/scripts/doctor.sh` pra ver o que falta.
+Se aparecer `harness-index`, `workflow-*`, `frontend/*`, `backend/*`, `memory-palace`, `evolving-skills` e `ratchet-feature-list` — você está bom. Se não aparecerem, o symlink não está ativo: rode `~/harness-engineering/scripts/doctor.sh` pra ver o que falta.
 
 ### 6. Confira o que o projeto disse pra você
 
@@ -73,7 +75,7 @@ cat .gsd/SPEC.md        # o que o produto faz, restrições
 cat .gsd/ROADMAP.md     # milestones, sprints, tasks
 ```
 
-Se o STACK aponta um archetype skill (ex.: `stack-react-vite-scss`), é essa skill que cobre as convenções de código deste projeto — o Claude vai puxar quando for relevante.
+Se o STACK aponta skills atômicas (ex.: `frontend/react` + `frontend/tailwind`), são essas skills que cobrem as convenções de código deste projeto — o Claude vai puxar quando for relevante.
 
 ---
 

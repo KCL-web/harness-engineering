@@ -1,6 +1,6 @@
 ---
 name: harness-index
-description: Índice das skills do harness-engineering. Carrega regras universais (branches develop/main, sessões dev/QA, validação antes de commit) e aponta para skills específicas (workflow-*, stack-*, ratchet-*). Invoque sempre que iniciar uma sessão em projeto que contém .gsd/ ou .harness/, ou quando o dev mencionar "harness".
+description: Índice das skills do harness-engineering. Carrega regras universais (branches develop/main, sessões dev/QA, validação antes de commit) e aponta para skills específicas (workflow-*, frontend/*, backend/*, ratchet-*). Invoque sempre que iniciar uma sessão em projeto que contém .gsd/ ou .harness/, ou quando o dev mencionar "harness".
 ---
 
 # Harness Index
@@ -37,8 +37,18 @@ A separação impede que o QA seja "convencido" pela sessão dev — ele só che
 | Abrir PR, `Closes #N`, validação, auto-merge em develop | `workflow-prs` |
 | Mensagem de commit (Conventional Commits) | `workflow-commits` |
 | Adicionar feature, atualizar baseline, ratchet | `ratchet-feature-list` |
-| Código frontend, testes (3 princípios), Playwright E2E | `stack-react-vite-scss` |
-| Código backend (Django, DRF, JWT) | `stack-django-drf-jwt` |
+| Código frontend — componente React, estrutura, props | `frontend/react` |
+| Código frontend — type safety TypeScript | `frontend/typescript` |
+| Código frontend — aliases, env vars `VITE_*` | `frontend/vite` |
+| Código frontend — estilo SCSS Modules + BEM | `frontend/scss-bem` |
+| Código frontend — estilo Tailwind CSS | `frontend/tailwind` |
+| Código frontend — componentes shadcn/ui (Radix + cva) | `frontend/shadcn-ui` |
+| Código frontend — formulário (RHF + zod) | `frontend/react-hook-form-zod` |
+| Código frontend — teste unitário/componente (Vitest + Testing Library) | `frontend/vitest-testing-library` |
+| Código frontend — teste E2E de fluxo crítico (Playwright) | `frontend/playwright-e2e` |
+| Código backend — Django, DRF (model, serializer, view) | `backend/django-drf` |
+| Código backend — autenticação JWT via cookie httpOnly | `backend/jwt-cookie-auth` |
+| Código backend — API de apoio Node/Express para lógica sensível a segredo | `backend/express` |
 | Memória cross-projeto (wings/rooms/drawers, MemPalace) | `memory-palace` |
 | Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |

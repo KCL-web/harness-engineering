@@ -1,5 +1,7 @@
 # Variáveis de ambiente
 
+Referência de `backend/django-drf`. Volte ao [índice](../SKILL.md) para o quando-invocar.
+
 Usar **django-environ**. `.env` por ambiente, `.env.example` versionado com placeholders.
 
 ```python
@@ -30,3 +32,6 @@ Variáveis obrigatórias em todo projeto:
 - **`.env` no `.gitignore`**, sempre.
 - **`.env.example` versionado** com placeholders (`DJANGO_SECRET_KEY=changeme`).
 - **Secrets reais em vault** (1Password, AWS Secrets Manager, etc.), nunca no repo.
+
+Se o projeto usa `backend/jwt-cookie-auth`, há variáveis e ajustes de CORS adicionais — ver a
+referência daquele skill.

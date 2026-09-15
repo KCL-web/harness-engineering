@@ -11,7 +11,9 @@ TDD é o loop red → green. Esta skill é a referência que faz esse loop produ
 
 Ao explorar o código, leia `CONTEXT.md` (se existir — ver skill `domain-modeling`) para que nomes de teste e vocabulário de interface batam com a linguagem de domínio do projeto, e respeite os ADRs da área que está tocando.
 
-Para mecânica específica de stack (pytest-django + factory_boy, ou Vitest/Playwright), veja `stack-django-drf-jwt` → `testing.md` e `stack-react-vite-scss` → `testing-unit.md`/`testing-e2e.md`. Esta skill é a disciplina agnóstica de stack por trás desses arquivos.
+Para mecânica específica de stack (pytest-django + factory_boy, ou Vitest/Playwright), veja
+`backend/django-drf` → `reference/testing.md` e `frontend/vitest-testing-library`/`frontend/playwright-e2e`.
+Esta skill é a disciplina agnóstica de stack por trás desses arquivos.
 
 ## Quando ler cada arquivo
 
@@ -53,4 +55,4 @@ Quando a forma dessa interface está em questão (quão profundo é o módulo, o
 - Vocabulário de design de módulo/interface/seam: `codebase-design`
 - Vocabulário de domínio e `CONTEXT.md`: `domain-modeling`
 - Revisão de código pós-implementação: `code-review`
-- Mecânica de teste por stack: `stack-django-drf-jwt`, `stack-react-vite-scss`
+- Mecânica de teste por stack: `backend/django-drf`, `frontend/vitest-testing-library`, `frontend/playwright-e2e`

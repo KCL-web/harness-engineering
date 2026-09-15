@@ -1,10 +1,20 @@
+---
+name: playwright-e2e
+description: Convenção de teste E2E com Playwright — locators semânticos, autenticação via storageState, isolamento de dados por worker, estado transiente controlado via page.route. Invoque ao escrever ou revisar teste de fluxo crítico (login, checkout, cadastro, pagamento).
+---
+
 # Testes E2E com Playwright
 
-**Use este arquivo quando:** for testar um fluxo completo no browser real (navegação, formulário multi-step, autenticação) ou comportamento que só existe fora do processo (roteamento, responsividade). Para lógica de função/hook ou componente isolado, veja [testing-unit.md](testing-unit.md).
+**Use esta skill quando:** for testar um fluxo completo no browser real (navegação, formulário
+multi-step, autenticação) ou comportamento que só existe fora do processo (roteamento,
+responsividade). Para lógica de função/hook ou componente isolado, veja
+`frontend/vitest-testing-library`.
 
 ## Regra de ouro: teste deriva do requisito, não do código
 
-Mesma regra de [testing-unit.md](testing-unit.md): formule o comportamento esperado do fluxo antes de olhar a implementação. Um E2E escrito clicando pela UI existente até "passar" tende a validar o bug atual, não o requisito.
+Mesma regra de `frontend/vitest-testing-library`: formule o comportamento esperado do fluxo antes de
+olhar a implementação. Um E2E escrito clicando pela UI existente até "passar" tende a validar o bug
+atual, não o requisito.
 
 ## Quando usar Playwright vs Vitest
 
@@ -15,7 +25,10 @@ Mesma regra de [testing-unit.md](testing-unit.md): formule o comportamento esper
 | Fluxo completo (login → dashboard → ação) | Playwright |
 | Interações que dependem de navegação real | Playwright |
 
-Regressão visual e acessibilidade automatizada **não** estão cobertas por este documento ainda — não assuma que "comportamento visual" ou "acessibilidade" têm teste só porque o fluxo passa por aqui. Se o projeto precisar disso, adicione explicitamente `toHaveScreenshot()` (regressão visual) ou `@axe-core/playwright` (acessibilidade) e documente o setup.
+Regressão visual e acessibilidade automatizada **não** estão cobertas por esta skill ainda — não
+assuma que "comportamento visual" ou "acessibilidade" têm teste só porque o fluxo passa por aqui. Se o
+projeto precisar disso, adicione explicitamente `toHaveScreenshot()` (regressão visual) ou
+`@axe-core/playwright` (acessibilidade) e documente o setup.
 
 ## Instalação (por projeto)
 
@@ -38,17 +51,20 @@ Adicione ao `package.json`:
 
 ```
 e2e/
-├── fixtures/          # dados de teste reutilizáveis
-├── auth.setup.ts       # login único, salva storageState
+├── fixtures/           # dados de teste reutilizáveis
+├── auth.setup.ts        # login único, salva storageState
 └── tests/
     └── login.spec.ts
 ```
 
-Page Object Model (POM) é opcional — só crie `e2e/pages/` se a suíte crescer o suficiente para justificar a camada de abstração. Não declare a pasta na estrutura se não vai usá-la.
+Page Object Model (POM) é opcional — só crie `e2e/pages/` se a suíte crescer o suficiente para
+justificar a camada de abstração. Não declare a pasta na estrutura se não vai usá-la.
 
 ## Seletores: locators semânticos, nunca CSS puro
 
-Mesma regra de [testing-unit.md](testing-unit.md) — `getByRole`/`getByLabel` em vez de seletor CSS ou `data-testid`. Um agente que carrega os dois arquivos não pode ver um usando `getByRole` e o outro usando `page.click('button[type="submit"]')`; a inconsistência vira instrução contraditória.
+Mesma regra de `frontend/vitest-testing-library` — `getByRole`/`getByLabel` em vez de seletor CSS ou
+`data-testid`. Um agente que carrega os dois não pode ver um usando `getByRole` e o outro usando
+`page.click('button[type="submit"]')`; a inconsistência vira instrução contraditória.
 
 ```ts
 // ❌ não faça
@@ -62,7 +78,9 @@ await page.getByRole('button', { name: 'Entrar' }).click();
 
 ## Autenticação: login uma vez, reusar via `storageState`
 
-Sem isso, todo teste que precisa de sessão faz login pela UI — numa suíte de 40 testes são 40 logins, cada um uma chance de flake sem relação com o que está sendo testado de fato. Padrão: um projeto de setup loga uma vez e salva o estado; os demais projetos reusam via `dependencies`.
+Sem isso, todo teste que precisa de sessão faz login pela UI — numa suíte de 40 testes são 40 logins,
+cada um uma chance de flake sem relação com o que está sendo testado de fato. Padrão: um projeto de
+setup loga uma vez e salva o estado; os demais projetos reusam via `dependencies`.
 
 ```ts
 // e2e/auth.setup.ts
@@ -92,13 +110,16 @@ projects: [
 ],
 ```
 
-O fluxo de login em si continua tendo **exatamente um** teste cobrindo a UI de login (incluindo o caminho de erro); todo o resto reusa a sessão salva.
+O fluxo de login em si continua tendo **exatamente um** teste cobrindo a UI de login (incluindo o
+caminho de erro); todo o resto reusa a sessão salva.
 
 ## Isolamento de dados entre testes
 
-Playwright roda em paralelo por padrão. Se dois testes compartilham o mesmo usuário/registro seed e um altera estado, você tem falha que só aparece no CI e não reproduz local.
+Playwright roda em paralelo por padrão. Se dois testes compartilham o mesmo usuário/registro seed e
+um altera estado, você tem falha que só aparece no CI e não reproduz local.
 
-- Cada teste cria os próprios dados via chamada de API direta (não pela UI), com identificador único por worker (`test.info().workerIndex` ou um sufixo aleatório).
+- Cada teste cria os próprios dados via chamada de API direta (não pela UI), com identificador único
+  por worker (`test.info().workerIndex` ou um sufixo aleatório).
 - Nenhum teste depende de estado deixado por outro teste, nem de ordem de execução.
 
 ## Exemplo com os 3 princípios aplicados a E2E
@@ -150,7 +171,9 @@ test.describe('Login', () => {
 });
 ```
 
-O teste de spinner acima usa `page.route` para segurar a resposta por 1s de propósito — sem isso, se a API responder em 30ms o spinner some antes da asserção rodar, e o teste fica flaky por construção (falha intermitente que corrói a confiança no CI).
+O teste de spinner acima usa `page.route` para segurar a resposta por 1s de propósito — sem isso, se a
+API responder em 30ms o spinner some antes da asserção rodar, e o teste fica flaky por construção
+(falha intermitente que corrói a confiança no CI).
 
 ## playwright.config.ts mínimo
 
@@ -176,16 +199,21 @@ export default defineConfig({
 });
 ```
 
-`trace: 'on-first-retry'` é mais útil que screenshot e vídeo juntos — abre o timeline completo (DOM, rede, console) do momento da falha. `forbidOnly` barra `.only` esquecido de chegar em CI.
+`trace: 'on-first-retry'` é mais útil que screenshot e vídeo juntos — abre o timeline completo (DOM,
+rede, console) do momento da falha. `forbidOnly` barra `.only` esquecido de chegar em CI.
 
-## Regras
+## Regras inegociáveis
 
-- Locators semânticos (`getByRole`, `getByLabel`) — nunca seletor CSS ou `data-testid` como primeira opção.
-- Todo fluxo crítico (login, checkout, cadastro, pagamento) precisa de pelo menos um teste Playwright cobrindo os 3 princípios.
+- Locators semânticos (`getByRole`, `getByLabel`) — nunca seletor CSS ou `data-testid` como primeira
+  opção.
+- Todo fluxo crítico (login, checkout, cadastro, pagamento) precisa de pelo menos um teste Playwright
+  cobrindo os 3 princípios.
 - Login pela UI só no teste de login em si; todo outro teste reusa `storageState`.
-- Cada teste cria seus próprios dados via API, isolados por worker — nunca compartilha seed com outro teste.
+- Cada teste cria seus próprios dados via API, isolados por worker — nunca compartilha seed com outro
+  teste.
 - Playwright roda separado dos testes Vitest — não misture no mesmo comando de CI.
-- Estado transiente (spinner, loading) é controlado via `page.route`, nunca observado torcendo para a asserção rodar a tempo.
+- Estado transiente (spinner, loading) é controlado via `page.route`, nunca observado torcendo para a
+  asserção rodar a tempo.
 - Adicione `playwright install` ao setup do projeto (veja `scripts/setup.sh`).
 
 ## Checklist antes de terminar
@@ -195,3 +223,7 @@ export default defineConfig({
 - [ ] Login pela UI acontece no máximo uma vez na suíte inteira.
 - [ ] Dados do teste são criados por ele mesmo, com identificador único — nada de seed compartilhado.
 - [ ] Nenhum `.only` ou `test.skip` esquecido.
+
+## Skills relacionadas
+
+- Teste unitário/componente: `frontend/vitest-testing-library`

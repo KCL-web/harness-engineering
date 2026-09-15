@@ -24,8 +24,8 @@ Tudo fica em `~/.mempalace/` por padrão. Nada sai da máquina sem opt-in.
 | --- | --- |
 | `<slug-do-projeto>` | Tudo específico daquele projeto (uma wing por projeto, slug igual ao nome da pasta) |
 | `harness` | Meta-decisões sobre como o dev usa o harness (workflow adotado, convenções de PR que diferem do default) |
-| `stack-react-vite-scss` | Decisões cross-projeto sobre o archetype frontend (libs adotadas, padrões que evoluíram) |
-| `stack-django-drf-jwt` | Idem para backend |
+| `frontend` | Decisões cross-projeto sobre as skills atômicas de frontend (libs adotadas, padrões que evoluíram entre `frontend/*`) |
+| `backend` | Idem para as skills atômicas de backend (`backend/*`) |
 | `agents/<nome>` | Diários de agentes especialistas (gerenciado pelo próprio MemPalace via `mempalace_list_agents`) |
 
 **Regra:** wing de projeto = nome da pasta do repo, em kebab-case. Não invente apelido novo.
@@ -81,8 +81,8 @@ Regra de bolso: se um futuro você não vai ganhar nada relendo isso em outro pr
 Antes de propor stack, padrão de pasta, lib de form, etc., **busque o que já foi decidido**:
 
 ```bash
-mempalace search "form library escolhida" --wing stack-react-vite-scss
-mempalace search "auth flow django" --wing stack-django-drf-jwt
+mempalace search "form library escolhida" --wing frontend
+mempalace search "auth flow django" --wing backend
 mempalace search "preferência de PR" --wing harness
 ```
 
@@ -112,5 +112,5 @@ No harness, as tools mais usadas são:
 ## Skills relacionadas
 
 - Índice geral e quando invocar cada skill: `harness-index`
-- Convenções de stack (decisões podem migrar pra cá quando viram regra): `stack-react-vite-scss`, `stack-django-drf-jwt`
+- Convenções de stack (decisões podem migrar pra cá quando viram regra): skills `frontend/*`, `backend/*`
 - Acompanhamento de progresso (fica em `.gsd/`, não no palace): `harness-index`
