@@ -40,6 +40,7 @@ Você está em um projeto que usa o **harness-engineering**. Este índice descre
 | Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
 | Auditoria de segurança completa (validação final ou bootstrap de projeto existente) | `security-audit` |
+| Infra: por que Forgejo não responde por IP direto, como o deploy automático dispara, endereços da tailnet | `infra-forgejo-coolify` |
 
 ## Skills importadas de mattpocock/skills (disciplina de engenharia agnóstica de stack)
 
