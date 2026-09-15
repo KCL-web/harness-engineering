@@ -1,5 +1,7 @@
 # Models
 
+Referência de `backend/django-drf`. Volte ao [índice](../SKILL.md) para o quando-invocar.
+
 - **PK**: UUID por padrão (`UUIDField(primary_key=True, default=uuid4)`). Use `BigAutoField` só quando há razão concreta (ex.: integração legada).
 - **Timestamps**: todo model herda `created_at` / `updated_at` via base abstrata.
 - **Sem lógica de negócio em models** — só persistência, invariantes simples e `__str__`. Lógica vai para `services.py`.

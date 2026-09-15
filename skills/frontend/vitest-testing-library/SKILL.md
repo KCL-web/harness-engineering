@@ -1,20 +1,34 @@
+---
+name: vitest-testing-library
+description: Convenção de teste de componente React e de função com Vitest + Testing Library — os 3 princípios obrigatórios, anti-padrões, mocking de rede via MSW. Invoque ao escrever teste de componente ou de função em src/lib/.
+---
+
 # Testes unitários e de componente (Vitest + Testing Library)
 
-**Use este arquivo quando:** for testar lógica de função/hook isolada ou um componente renderizando e respondendo a eventos, dentro do processo (sem browser real). Para fluxo completo, navegação real ou comportamento visual, veja [testing-e2e.md](testing-e2e.md).
+**Use esta skill quando:** for testar lógica de função/hook isolada ou um componente renderizando e
+respondendo a eventos, dentro do processo (sem browser real). Para fluxo completo, navegação real ou
+comportamento visual, veja `frontend/playwright-e2e`.
 
 ## Regra de ouro: teste deriva do requisito, não do código
 
-Ao escrever teste para código já existente, formule primeiro o comportamento esperado em uma frase, **sem olhar a implementação**. Se o comportamento real divergir do que você formulou, isso é bug — não é motivo para ajustar o teste ao código. Um teste escrito lendo a implementação linha a linha tende a codificar o bug junto, porque descreve o que o código faz, não o que deveria fazer.
+Ao escrever teste para código já existente, formule primeiro o comportamento esperado em uma frase,
+**sem olhar a implementação**. Se o comportamento real divergir do que você formulou, isso é bug — não
+é motivo para ajustar o teste ao código. Um teste escrito lendo a implementação linha a linha tende a
+codificar o bug junto, porque descreve o que o código faz, não o que deveria fazer.
 
 ## Os 3 princípios obrigatórios
 
 Todo teste de componente ou função deve cobrir pelo menos estes três ângulos:
 
 ### 1. Parâmetros (variações de entrada)
-Teste cada variante relevante dos props/argumentos. Se um componente aceita `variant="primary" | "secondary"`, ambas devem ter teste. Se uma função aceita um número, teste limites (0, negativo, muito grande).
+Teste cada variante relevante dos props/argumentos. Se um componente aceita
+`variant="primary" | "secondary"`, ambas devem ter teste. Se uma função aceita um número, teste
+limites (0, negativo, muito grande).
 
 ### 2. Ações (cada interação com efeito observável)
-Cada ação do usuário que produz um efeito observável (click que dispara callback, submit que muda estado, change que atualiza validação) é candidata a teste — não cada interação possível em abstrato (ver "teto" abaixo).
+Cada ação do usuário que produz um efeito observável (click que dispara callback, submit que muda
+estado, change que atualiza validação) é candidata a teste — não cada interação possível em abstrato
+(ver "teto" abaixo).
 
 ### 3. O que pode dar errado (dados inválidos, nulos, invertidos, edge cases)
 - Dados inválidos: email sem `@`, senha curta demais, CPF com letras.
@@ -24,14 +38,17 @@ Cada ação do usuário que produz um efeito observável (click que dispara call
 
 ## Teto: priorize, não esgote
 
-"Cada ação é candidata a teste" não é licença para gerar testes até esgotar combinações. Ordem de prioridade quando o tempo/contexto é limitado:
+"Cada ação é candidata a teste" não é licença para gerar testes até esgotar combinações. Ordem de
+prioridade quando o tempo/contexto é limitado:
 
 1. Caminho de erro (o que quebra silenciosamente é mais caro que o que quebra visivelmente).
 2. Edge case / boundary.
 3. Caminho feliz.
-4. Variação de estilo ou prop cosmética — geralmente **não** merece teste próprio (ver anti-padrões abaixo).
+4. Variação de estilo ou prop cosmética — geralmente **não** merece teste próprio (ver anti-padrões
+   abaixo).
 
-Um componente trivial (renderiza props, sem lógica) não precisa de 5 testes — às vezes não precisa de nenhum.
+Um componente trivial (renderiza props, sem lógica) não precisa de 5 testes — às vezes não precisa de
+nenhum.
 
 ## O que NÃO testar
 
@@ -46,13 +63,20 @@ Um componente trivial (renderiza props, sem lógica) não precisa de 5 testes �
 
 ## Assíncrono
 
-- Use `findBy*` para o que aparece depois de uma ação assíncrona. Nunca `waitFor(() => expect(getByRole(...)).toBeInTheDocument())` — é redundante e a mensagem de erro é pior; `findBy*` já faz isso.
-- Ausência só é uma asserção válida **depois** de esperar o sinal de que a operação terminou (ex.: `await screen.findByRole('button', { name: 'Entrar' })` voltar a ficar habilitado). `expect(screen.queryByRole('alert')).toBeNull()` isolado logo após disparar uma ação assíncrona passa trivialmente porque o elemento ainda nem teve chance de aparecer.
-- Zero `waitForTimeout` / `sleep` arbitrário. Se precisa esperar algo, espere o sinal (elemento, chamada de mock, mudança de estado), não um tempo fixo.
+- Use `findBy*` para o que aparece depois de uma ação assíncrona. Nunca
+  `waitFor(() => expect(getByRole(...)).toBeInTheDocument())` — é redundante e a mensagem de erro é
+  pior; `findBy*` já faz isso.
+- Ausência só é uma asserção válida **depois** de esperar o sinal de que a operação terminou (ex.:
+  `await screen.findByRole('button', { name: 'Entrar' })` voltar a ficar habilitado).
+  `expect(screen.queryByRole('alert')).toBeNull()` isolado logo após disparar uma ação assíncrona
+  passa trivialmente porque o elemento ainda nem teve chance de aparecer.
+- Zero `waitForTimeout` / `sleep` arbitrário. Se precisa esperar algo, espere o sinal (elemento,
+  chamada de mock, mudança de estado), não um tempo fixo.
 
 ## Exemplo completo aplicando os princípios
 
-Formulário com submit assíncrono — é onde teste unitário paga; componente puramente apresentacional geralmente não justifica este nível de cobertura.
+Formulário com submit assíncrono — é onde teste unitário paga; componente puramente apresentacional
+geralmente não justifica este nível de cobertura.
 
 ```tsx
 // LoginForm.test.tsx
@@ -117,7 +141,9 @@ describe('LoginForm', () => {
 
 ## Mocking de rede: MSW, não `vi.mock` de módulo de API
 
-`vi.mock('./api')` testa o mock, não a integração — passa mesmo se a URL, o método, o header ou o parsing da resposta estiverem errados. Prefira **MSW** (Mock Service Worker), que intercepta na camada de rede: o componente faz a requisição de verdade, você só controla a resposta HTTP.
+`vi.mock('./api')` testa o mock, não a integração — passa mesmo se a URL, o método, o header ou o
+parsing da resposta estiverem errados. Prefira **MSW** (Mock Service Worker), que intercepta na
+camada de rede: o componente faz a requisição de verdade, você só controla a resposta HTTP.
 
 ```ts
 // src/mocks/handlers.ts
@@ -146,16 +172,21 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 ```
 
-`vi.mock` continua sendo a ferramenta certa para o que **não** é HTTP: `localStorage`, `matchMedia`, `IntersectionObserver`, `crypto`.
+`vi.mock` continua sendo a ferramenta certa para o que **não** é HTTP: `localStorage`, `matchMedia`,
+`IntersectionObserver`, `crypto`.
 
-## Regras de testes unitários / integração
+## Regras inegociáveis
 
-- Função em `src/lib/` tem teste quando tem ramificação, cálculo, parsing, ou já causou um bug uma vez. Não escreva teste para re-export, constante, ou wrapper trivial de uma linha só porque está em `src/lib/`.
+- Função em `src/lib/` tem teste quando tem ramificação, cálculo, parsing, ou já causou um bug uma
+  vez. Não escreva teste para re-export, constante, ou wrapper trivial de uma linha só porque está em
+  `src/lib/`.
 - Testes de componente ficam colocados junto (`Button.test.tsx`).
 - Prefira `screen.getByRole` a `getByTestId` — testa comportamento acessível.
 - Teste o comportamento observável, não internals de implementação.
 - Rede via MSW; `vi.mock` só para o que não é HTTP.
-- Use `userEvent.setup()` no início de cada teste — não chame `userEvent.click(...)` direto sem `setup()` (a API direta ainda funciona, mas não isola pointer/clipboard entre testes e quebra com fake timers).
+- Use `userEvent.setup()` no início de cada teste — não chame `userEvent.click(...)` direto sem
+  `setup()` (a API direta ainda funciona, mas não isola pointer/clipboard entre testes e quebra com
+  fake timers).
 
 ## Configuração mínima do Vitest
 
@@ -175,12 +206,21 @@ test: {
 import '@testing-library/jest-dom';
 ```
 
-Com `globals: false`, importe `describe`, `it`, `expect`, `vi` explicitamente de `'vitest'` em cada arquivo — funciona melhor com TypeScript e deixa claro de onde vem cada símbolo. `restoreMocks`/`clearMocks` evitam mock vazando de um teste para o outro, causa comum de teste que passa sozinho e falha quando roda junto com a suíte.
+Com `globals: false`, importe `describe`, `it`, `expect`, `vi` explicitamente de `'vitest'` em cada
+arquivo — funciona melhor com TypeScript e deixa claro de onde vem cada símbolo. `restoreMocks`/
+`clearMocks` evitam mock vazando de um teste para o outro, causa comum de teste que passa sozinho e
+falha quando roda junto com a suíte.
 
 ## Checklist antes de terminar
 
 - [ ] Rodou a suíte inteira, não só o arquivo novo.
-- [ ] Cada teste novo falha se você reverter a mudança que ele cobre (se não falha, o teste não testa nada).
+- [ ] Cada teste novo falha se você reverter a mudança que ele cobre (se não falha, o teste não testa
+      nada).
 - [ ] Nenhum `.only`, `.skip`, `waitForTimeout` ou `sleep` esquecido.
 - [ ] Nenhuma asserção em classe CSS, estrutura de DOM ou snapshot.
 - [ ] `findBy*` para tudo que é assíncrono; nenhum `waitFor(() => expect(getBy...))`.
+
+## Skills relacionadas
+
+- Estrutura de componente: `frontend/react`
+- E2E de fluxo crítico: `frontend/playwright-e2e`
