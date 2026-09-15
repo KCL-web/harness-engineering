@@ -105,7 +105,10 @@ A entrevista de bootstrap:
   ```
 - No fim, opcionalmente sincroniza ROADMAP → Forgejo (milestones, labels, issues — sem project board).
 
-> Note que **não existe mais `.gsd/CONVENTIONS.md`** na v2 — convenções de código vêm da skill `stack-<archetype>` que combina com a stack (`stack-react-vite-scss`, `stack-django-drf-jwt`, etc.). A entrevista identifica o archetype e registra em `STACK.md`.
+> Note que **não existe mais `.gsd/CONVENTIONS.md`** na v2 — convenções de código vêm da combinação de
+> skills atômicas `frontend/*`/`backend/*` que casam com a stack (`frontend/react`, `frontend/tailwind`,
+> `backend/django-drf`, etc. — ver `skills/harness-index` para a tabela completa). A entrevista
+> identifica quais atômicas se aplicam e registra em `STACK.md`.
 
 ---
 

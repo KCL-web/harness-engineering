@@ -122,4 +122,4 @@ getUser(fromAny({ body: { id: 123 } }));
 ## Skills relacionadas
 
 - Disciplina de teste (o que testar, seams, mocking): `tdd`
-- Mecânica de teste unitário em React/Vite (arquivos `.test.ts`/`.spec.ts`, TypeScript): `stack-react-vite-scss` → `testing-unit.md`, `type-safety.md`
+- Mecânica de teste unitário em React/Vite (arquivos `.test.ts`/`.spec.ts`, TypeScript): `frontend/vitest-testing-library`, `frontend/typescript`
