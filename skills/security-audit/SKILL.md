@@ -1,6 +1,6 @@
 ---
 name: security-audit
-description: Auditoria de segurança completa do projeto (6 categorias: isolamento de tenant, autorização client-side, IDOR, segredos hardcoded, XSS, armazenamento inseguro de token de auth), com relatório em PDF e issues prontas para o tracker. Invoque para validação final antes de release/PR develop→main, ou na FASE 0 do bootstrap quando o projeto já tem código (para surfacear falhas logo no início). Diferente da skill genérica `security-review` (revisão de diff) — esta é uma auditoria completa do código-fonte, mais pesada, com saída em PDF.
+description: "Auditoria de segurança completa do projeto (6 categorias: isolamento de tenant, autorização client-side, IDOR, segredos hardcoded, XSS, armazenamento inseguro de token de auth), com relatório em PDF e issues prontas para o tracker. Invoque para validação final antes de release/PR develop→main, ou na FASE 0 do bootstrap quando o projeto já tem código (para surfacear falhas logo no início). Diferente da skill genérica `security-review` (revisão de diff) — esta é uma auditoria completa do código-fonte, mais pesada, com saída em PDF."
 disable-model-invocation: true
 ---
 
