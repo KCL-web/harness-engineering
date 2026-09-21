@@ -36,6 +36,8 @@ Você está em um projeto que usa o **harness-engineering**. Este índice descre
 | Código backend — Django, DRF (model, serializer, view) | `backend/django-drf` |
 | Código backend — autenticação JWT via cookie httpOnly | `backend/jwt-cookie-auth` |
 | Código backend — API de apoio Node/Express para lógica sensível a segredo | `backend/express` |
+| Código backend — instrumentação de métricas (RED/USE), Prometheus/Grafana central | `backend/observability` |
+| Decidir arquitetura pra tráfego/volume crescente, escada de padrões por escala | `scaling-architecture` |
 | Memória cross-projeto (wings/rooms/drawers, MemPalace) | `memory-palace` |
 | Rituais de início/fim de sessão (wake-up, search, drawer recap) | `session-rituals` |
 | Skills auto-evolutivas (FIX/DERIVED/CAPTURED, OpenSpace) | `evolving-skills` |
