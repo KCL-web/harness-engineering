@@ -1,0 +1,81 @@
+{
+  "title": "Serviço — RED/USE (modelo)",
+  "description": "Dashboard modelo parametrizado por $servico. Funciona para qualquer projeto que siga a convenção de nome em reference/naming-convention.md — troque o serviço no dropdown em vez de manter um dashboard por projeto.",
+  "schemaVersion": 39,
+  "tags": ["observability", "red", "use"],
+  "timezone": "browser",
+  "time": { "from": "now-6h", "to": "now" },
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "servico",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "query": "label_values(http_requests_total, job)",
+        "refresh": 2,
+        "includeAll": false,
+        "multi": false
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Rate — requisições/s",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{job=\"$servico\"}[5m])) by (route)",
+          "legendFormat": "{{route}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Errors — taxa de erro (%)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "100 * sum(rate(http_requests_total{job=\"$servico\", status=~\"5..\"}[5m])) / sum(rate(http_requests_total{job=\"$servico\"}[5m]))",
+          "legendFormat": "taxa de erro 5xx"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "percent" }, "overrides": [] }
+    },
+    {
+      "id": 3,
+      "title": "Duration — latência p95/p50 (s)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"$servico\"}[5m])) by (le, route))",
+          "legendFormat": "p95 {{route}}"
+        },
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"$servico\"}[5m])) by (le, route))",
+          "legendFormat": "p50 {{route}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Saturation — conexões de banco em uso",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "db_connections_in_use{job=\"$servico\"}",
+          "legendFormat": "conexões em uso"
+        }
+      ]
+    }
+  ]
+}
