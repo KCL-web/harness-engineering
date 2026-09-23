@@ -45,7 +45,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1G   # não use 512M — ver nota abaixo, causou OOM kill real
     networks:
       - coolify
 
@@ -189,6 +189,20 @@ O dashboard modelo usa `${DS_PROMETHEUS}` como placeholder de datasource, mas **
 ### Postura de segurança aceita: `/metrics` no domínio público (agendafacil-backend)
 
 O `/metrics` do agendafacil-backend fica no **mesmo domínio público da API**, não isolado só na rede interna como a regra padrão deste skill recomenda (ver "Regras inegociáveis" no `SKILL.md`) — protegido só pelo bearer token. Decisão consciente do usuário, tomada depois que uma tentativa de reforçar com bloqueio de rede via Traefik já havia causado o incidente de produção descrito acima. Isso é um trade-off aceito por ora (bearer token forte é considerado suficiente), não um bug pendente — mas fica registrado que existe a opção de reforçar com bloqueio de rede no futuro, com mais cautela e testando a mudança isolada antes de aplicar em produção.
+
+### Grafana com 512M de memória sofre OOM kill real (Bad Gateway intermitente)
+
+O limite de `512M` sugerido inicialmente pro container do Grafana é insuficiente pra versão atual (`grafana/grafana:latest`) — ela carrega vários plugins bundled no boot (Pyroscope, Tempo, Elasticsearch, Zipkin, OpenTSDB, Stackdriver, Metrics Drilldown, etc.) que consomem mais memória do que a estimativa original do harness previa. Confirmado com uso real em produção (agendafacil-backend): baseline de ~348MB (68% do limite) só com um usuário navegando, picos de renderização de dashboard (múltiplos painéis carregando queries simultâneas) estourando o limite — `dmesg | grep -i "killed process"` mostrou 4 OOM kills reais do processo `grafana` num período curto, cada um causando uma janela de "Bad Gateway" do Traefik enquanto o container reiniciava (visível como intermitente pra quem estava navegando o dashboard).
+
+**Fix:** usar `memory: 1G` como limite padrão pro Grafana (já refletido no compose de referência acima), não `512M`. Se depois de aplicar ainda houver OOM (ex.: Grafana com mais datasources/plugins customizados), considerar subir mais, ou desabilitar plugins bundled não usados via `GF_PLUGINS_PREINSTALL_DISABLED` — não investigado ainda, fica como próximo passo se `1G` não for suficiente.
+
+**Como diagnosticar isso da próxima vez:**
+```bash
+docker inspect <container_grafana> --format 'RestartCount: {{.RestartCount}} | OOMKilled: {{.State.OOMKilled}}'
+docker stats <container_grafana> --no-stream   # confirma % do limite em uso
+dmesg | grep -i "killed process\|out of memory"   # confirma OOM kill real no kernel
+```
+`RestartCount` alto + uso de memória próximo do limite é o padrão a procurar; `OOMKilled` no `docker inspect` só reflete o motivo da última saída, não o histórico — `dmesg` é a fonte confiável.
 
 ### Nota: métricas de fila (Celery)
 
