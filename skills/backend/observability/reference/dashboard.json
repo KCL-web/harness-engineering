@@ -76,6 +76,37 @@
           "legendFormat": "conexões em uso"
         }
       ]
+    },
+    {
+      "id": 5,
+      "title": "DB Query Duration — p95/p50 (s)",
+      "description": "Gap conhecido: usa django_db_query_duration_seconds_bucket, métrica nativa do django-prometheus. Só funciona hoje para stacks Django instrumentadas com django-prometheus. Não tem label route/operation genérico (só vendor/alias) — outras stacks precisam de instrumentação equivalente para popular este painel.",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(django_db_query_duration_seconds_bucket{job=\"$servico\"}[5m])) by (le))",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(django_db_query_duration_seconds_bucket{job=\"$servico\"}[5m])) by (le))",
+          "legendFormat": "p50"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Memory — RSS por processo (MB)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes{job=\"$servico\"} / 1024 / 1024",
+          "legendFormat": "{{instance}}"
+        }
+      ]
     }
   ]
 }
