@@ -118,6 +118,46 @@ Isso seta o header `Authorization: Bearer <token>` automaticamente — compatív
 9. Confirmar que o serviço aparece no dropdown `$servico` do dashboard modelo no Grafana. Se importar o `dashboard.json` pela primeira vez nesse Grafana, ver "Import do dashboard.json" abaixo — o placeholder de datasource não vai resolver sozinho.
 10. Depois de qualquer mudança em healthcheck, rodar `docker inspect <container> --format='{{json .State.Health}}'` e confirmar `"Status": "healthy"` antes de considerar o trabalho concluído — "container Up" não é "container healthy", e "healthy" não é "rota pública funciona" (confirme a rota também).
 
+## Alertas (Grafana Alerting)
+
+Dashboard sozinho não avisa ninguém — alguém precisa estar olhando ativamente pra notar um problema. Vale configurar alerta pra qualquer serviço onde "ninguém percebeu a tempo" tem custo real — em especial serviços **multi-tenant**, onde uma falha de recurso compartilhado (banco, fila) afeta todos os clientes ao mesmo tempo, não só um. Nem todo projeto precisa disso desde o dia um — pondere a criticidade antes de replicar em todos.
+
+Usamos o **Grafana Alerting** embutido (não um Alertmanager separado) — menos infra pra manter, e já temos o Grafana no ar.
+
+### Configurar SMTP no Grafana
+
+Variáveis de ambiente no serviço do Grafana (mesmo bloco `environment` do `GF_SECURITY_ADMIN_PASSWORD`):
+
+```yaml
+- GF_SMTP_ENABLED=true
+- GF_SMTP_HOST=<host>:<porta>       # ex. mail.provedor.com:465
+- GF_SMTP_USER=<usuario>
+- GF_SMTP_PASSWORD=${GRAFANA_SMTP_PASSWORD}   # secret do Coolify, nunca hardcoded
+- GF_SMTP_FROM_ADDRESS=<remetente>
+- GF_SMTP_FROM_NAME=Grafana Alertas
+```
+
+Porta `465` (SSL implícito) funciona sem configuração extra — o cliente SMTP do Grafana detecta automaticamente pelo número da porta, mesmo comportamento do `EMAIL_USE_SSL=True` do Django/smtplib. Não precisa de `GF_SMTP_STARTTLS_POLICY` nesse caso.
+
+⚠️ **Pegadinha ao testar**: no Contact Point (tipo Email), o campo **"Addresses"** precisa ter um e-mail de verdade — se ficar com o texto placeholder (ex. a palavra "Test") sem substituir, o teste falha com `gomail: invalid address "Test": mail: missing '@' or angle-addr`. Erro de preenchimento de formulário, não de config SMTP (a conexão em si já teria funcionado se chegou a tentar montar o e-mail).
+
+### Regras baseline recomendadas (qualquer serviço crítico)
+
+**1. Serviço fora do ar:**
+- Query: `up{job="<nome-do-servico>"}`
+- Condição: `WHEN last() OF A IS BELOW 1`
+- For: `1m` (tolera ~4 scrapes perdidos consecutivos antes de disparar, evita falso positivo por 1 scrape isolado)
+- Label: `severity: critical`
+
+**2. Taxa de erro alta:**
+- Query: `100 * sum(rate(http_requests_total{job="<nome-do-servico>", status=~"5.."}[5m])) / sum(rate(http_requests_total{job="<nome-do-servico>"}[5m]))`
+- Condição: `WHEN last() OF A IS ABOVE 5` — 5% é chute inicial, sem baseline real por trás. Sem histórico de uso normal do serviço (dias/semanas de tráfego real), não dá pra saber se 5% é apertado ou frouxo demais — trate como valor provisório e reavalie depois que o serviço acumular histórico real.
+- For: `5m`
+- **No Data → OK**, não "Alerting": ausência de tráfego não é erro, é só ausência de dado.
+- Label: `severity: critical`
+
+Depois de criar as regras, confirme em **Alerting → Notification policies** que a política padrão está apontando pro contact point certo.
+
 ## Lições do primeiro deploy real (agendafacil-backend, 2026-09)
 
 Achados operacionais do primeiro projeto instrumentado com este skill em produção. Ler antes de repetir os mesmos erros no próximo projeto.
